@@ -18,6 +18,7 @@
   "devDependencies": {
     "browser-sync": "^2.17.6",
     "gulp": "^3.9.1",
+    "gulp-coveralls": "^0.1.4",
     "jshint": "^2.9.4"
   }
 }
