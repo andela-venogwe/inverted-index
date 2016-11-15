@@ -24,16 +24,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
  * we first want sass to compile any sass files that 
  * has changed, only then serve them (which is done by express.static).
  */
-
 app.use(
   sass({
-    src: __dirname + '/sass', 
+    src: __dirname + 'src/sass', 
     dest: __dirname + '/public/stylesheets',
     outputStyle: 'compressed',
     prefix:  '/stylesheets',
     debug: true,       
   })
 );
+
 // The static middleware must come after the sass middleware
 app.use(express.static( path.join( __dirname, 'public' ) ) );
 
