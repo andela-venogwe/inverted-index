@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
  */
 app.use(
   sass({
-    src: __dirname + 'src/sass', 
+    src: __dirname + '/src/sass', 
     dest: __dirname + '/public/stylesheets',
     outputStyle: 'compressed',
     prefix:  '/stylesheets',
