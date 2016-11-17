@@ -22,14 +22,14 @@ gulp.task('nodemon', function (cb) {
     env: { 'NODE_ENV': 'development' },
     ignore: 'src/*',
     tasks: ['browser-sync']
-  }).on('start', function () {
+  })/*.on('start', function () {
     // to avoid nodemon being started multiple times
     // thanks @matthisk
     if (!started) {
       cb();
       started = true; 
     } 
-  });
+  });*/
 });
  
 //gulp jshint code testing
