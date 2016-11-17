@@ -12,7 +12,7 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'src', 'favicon.ico')));
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
   sass({
     src: __dirname + '/src/sass', 
-    dest: __dirname + '/public/stylesheets',
+    dest: __dirname + '/src/stylesheets',
     outputStyle: 'compressed',
     prefix:  '/stylesheets',
     debug: true,       
@@ -35,7 +35,7 @@ app.use(
 );
 
 // The static middleware must come after the sass middleware
-app.use(express.static( path.join( __dirname, 'public' ) ) );
+app.use(express.static( path.join( __dirname, 'src' ) ) );
 
 app.use('/', index);
 
