@@ -51,12 +51,12 @@ gulp.task('jasmine', ['lint'], () => {
 // gulp coverall testing
 gulp.task('coveralls', ['jasmine'], () => {
   'use strict';
-  return gulp.src('src/spec/lcov.info')
+  return gulp.src('src/test/coverage/**/lcov.info')
     .pipe(coveralls());
 });
 
 // open jasmine test page in browser
-gulp.task('jasmine-url', function(){
+gulp.task('jasmine-url', ['jasmine'], function(){
   var options = {
     uri: 'localhost:8888',
     app: 'firefox'
@@ -66,7 +66,7 @@ gulp.task('jasmine-url', function(){
 });
 
 // run browsersync after nodemon runs
-gulp.task('browser-sync', () => {
+gulp.task('browser-sync', ['jasmine-url'], () => {
   browserSync.init(null, {
     proxy: "http://localhost:3000",
     browser: 'firefox',

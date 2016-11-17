@@ -1,5 +1,5 @@
 scss:
-  enabled: false
+  enabled: true
 
 jshint:
   config_file: .jshintrc
