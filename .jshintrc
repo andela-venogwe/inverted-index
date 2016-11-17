@@ -28,17 +28,14 @@
                                 //   true     : all variables, last function parameter
                                 //   "vars"   : all variables only
                                 //   "strict" : all variables, all function parameters
-    "strict"        : true,     // true: Requires all functions run in ES5 Strict Mode
+    "strict"        : false,     // true: Requires all functions run in ES5 Strict Mode
 
     // Relaxing
     "esversion"     : 6,         // {int} Specify the ECMAScript version to which the code must adhere.
 
     // Environments
     "browser"       : true,     // Web Browser (window, document, etc)
-    "browserify"    : false,    // Browserify (node.js code in the browser)
+    "browserify"    : true,    // Browserify (node.js code in the browser)
     "jasmine"       : true,    // Jasmine
-    "node"          : true,    // Node.js
-
-    // Custom Globals
-    "globals"       : {}        // additional predefined global variables
+    "node"          : true  // Node.js
 }
