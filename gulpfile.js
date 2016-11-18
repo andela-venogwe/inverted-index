@@ -70,7 +70,7 @@ gulp.task('nodemon', ['lint', 'coveralls', 'jasmine'], function (cb) {
 // run browsersync after nodemon runs
 gulp.task('browser-sync', ['nodemon'], () => {
   browserSync.init(null, {
-    proxy: "http://localhost:3000",
+    proxy: 'http://localhost:3000',
     files: ['./src/sass/*.scss', './src/js/*.js', './src/public/js/*.js'],
     browser: browser,
     //reloadDelay: 2000,
