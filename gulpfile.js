@@ -3,7 +3,7 @@ const gulp = require('gulp');
 const nodemon = require('gulp-nodemon');
 const jshint = require('gulp-jshint');
 const coveralls = require('gulp-coveralls');
-const open = require('gulp-open');
+const gulpOpen = require('gulp-open');
 const browserSync = require('browser-sync').create();
 const browser = os.platform() === 'linux' ? 'google-chrome' : (
   os.platform() === 'darwin' ? 'google chrome' : (
@@ -25,10 +25,10 @@ gulp.task('lint', () => {
 //re-run jasmine tests on file change
 gulp.task('jasmine', ['lint'], () => {
   gulp.src(['./src/js/*.js'])
-  .pipe(open({
+  .pipe(gulpOpen({
     uri: 'src/jasmine/SpecRunner.html',
     app: browser
-  }))
+  }));
   //.pipe(browserSync.reload({ stream: true }));
 });
 
@@ -83,7 +83,7 @@ gulp.task('browser-sync', ['nodemon'], () => {
 
 // run tasks on js files - @ TODO 
 gulp.task('js',  function () {
-  return gulp.src('src/public/**/*.js')
+  return gulp.src('src/public/**/*.js');
     // do stuff to JavaScript files
     //.pipe(uglify())
     //.pipe(gulp.dest('...'));
@@ -93,7 +93,7 @@ gulp.task('js',  function () {
 gulp.task('css', function () {
   return gulp.src('src/public/**/*.css')
     .pipe(browserSync.reload({ stream: true }));
-})
+});
 
 
 gulp.task('bs-reload', function () {
