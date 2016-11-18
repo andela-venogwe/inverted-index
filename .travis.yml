@@ -10,4 +10,4 @@ before_script:
 
 script: gulp jasmine
 
-after_success: 'npm run coveralls'
+after_success: 'gulp coveralls'
