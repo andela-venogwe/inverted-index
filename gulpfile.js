@@ -28,7 +28,7 @@ gulp.task('jasmine', ['lint'], () => {
   gulp.src(['./src/js/*.js'])
   .pipe(open({
     uri: 'src/jasmine/SpecRunner.html',
-    app: browser
+    app: 'google-chrome'
   }))
   //.pipe(browserSync.reload({ stream: true }));
 });
