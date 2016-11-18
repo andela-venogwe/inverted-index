@@ -9,10 +9,10 @@ const index = require('./routes/index');
 const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'src/views'));
 app.set('view engine', 'jade');
 
-app.use(favicon(path.join(__dirname, 'src', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'src/public', 'favicon.ico')));
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -23,19 +23,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
  * adding the sass middleware The reason is that 
  * we first want sass to compile any sass files that 
  * has changed, only then serve them (which is done by express.static).
- */
+ */ 
 app.use(
   sass({
     src: __dirname + '/src/sass', 
-    dest: __dirname + '/src/stylesheets',
+    dest: __dirname + '/src/public/stylesheets',
     outputStyle: 'compressed',
-    prefix:  '/stylesheets',
+    prefix:  '/public/stylesheets',
     debug: true,       
   })
-);
+); 
 
 // The static middleware must come after the sass middleware
-app.use(express.static( path.join( __dirname, 'src' ) ) );
+app.use(express.static( path.join( __dirname, 'src/public' ) ) );
 
 app.use('/', index);
 
