@@ -5,6 +5,9 @@ const jshint = require('gulp-jshint');
 const coveralls = require('gulp-coveralls');
 const open = require('gulp-open');
 const browserSync = require('browser-sync').create();
+const browser = os.platform() === 'linux' ? 'google-chrome' : (
+  os.platform() === 'darwin' ? 'google chrome' : (
+  os.platform() === 'win32' ? 'chrome' : 'firefox'));
 //process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 // we'd need a slight delay to reload browsers
@@ -21,14 +24,10 @@ gulp.task('lint', () => {
 
 //re-run jasmine tests on file change
 gulp.task('jasmine', ['lint'], () => {
-  const browser = os.platform() === 'linux' ? 'google-chrome' : (
-  os.platform() === 'darwin' ? 'google chrome' : (
-  os.platform() === 'win32' ? 'chrome' : 'firefox'));
-
   gulp.src(['./src/js/*.js'])
   .pipe(open({
     uri: 'src/jasmine/SpecRunner.html',
-    app: 'google-chrome'
+    app: browser
   }))
   //.pipe(browserSync.reload({ stream: true }));
 });
@@ -73,8 +72,8 @@ gulp.task('browser-sync', ['nodemon'], () => {
   browserSync.init(null, {
     proxy: "http://localhost:3000",
     files: ['./src/sass/*.scss', './src/js/*.js', './src/public/js/*.js'],
-    browser: 'google chrome',
-    reloadDelay: 2000,
+    browser: browser,
+    //reloadDelay: 2000,
     port: 4000,
     ui: {
       port: 4001
