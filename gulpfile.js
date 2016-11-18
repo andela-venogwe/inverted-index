@@ -2,82 +2,106 @@ const os = require('os');
 const gulp = require('gulp');
 const nodemon = require('gulp-nodemon');
 const jshint = require('gulp-jshint');
-const jasmineBrowser = require('gulp-jasmine-browser');
 const coveralls = require('gulp-coveralls');
+const gulpOpen = require('gulp-open');
 const browserSync = require('browser-sync').create();
-const open = require('gulp-open');
+const browser = os.platform() === 'linux' ? 'google-chrome' : (
+  os.platform() === 'darwin' ? 'google chrome' : (
+  os.platform() === 'win32' ? 'chrome' : 'firefox'));
+//process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-// watch for css jade and js file changes and reload browser
-gulp.task('watch', () => {
-  'use strict';
-  gulp.watch(['src/test/*.js', 'src/sass/*.scss', 'src/js/*.js'], browserSync.reload);
-});
-
-// run the nodemon server reload
-gulp.task('nodemon', function (cb) {
-  const started = false;
-  return nodemon({
-    script: 'app.js',
-    ext: 'js', 
-    env: { 'NODE_ENV': 'development' },
-    ignore: 'src/*',
-    tasks: ['browser-sync']
-  }).on('start', function () {
-    // to avoid nodemon being started multiple times
-    // thanks @matthisk
-    if (!started) {
-      cb();
-      started = true; 
-    } 
-  });
-});
+// we'd need a slight delay to reload browsers
+// connected to browser-sync after restarting nodemon
+const BROWSER_SYNC_RELOAD_DELAY = 2000;
  
 //gulp jshint code testing
 gulp.task('lint', () => {
   'use strict';
-  return gulp.src(['*.js', 'src/js/*.js', 'src/test/*.js'])
+  return gulp.src(['*.js', './src/js/*.js', './src/jasmine/spec/*.js', './src/public/js/*.js'])
     .pipe(jshint()) 
     .pipe(jshint.reporter('default')); 
 });
 
 //re-run jasmine tests on file change
 gulp.task('jasmine', ['lint'], () => {
-  'use strict';
-  return gulp.src(['src/js/inverted-index.js', 'src/test/inverted-index-test.js'])
-    .pipe(jasmineBrowser.specRunner())
-    .pipe(jasmineBrowser.server({port: 8888}));
-}); 
+  gulp.src(['./src/js/*.js'])
+  .pipe(gulpOpen({
+    uri: 'src/jasmine/SpecRunner.html',
+    app: browser
+  }));
+  //.pipe(browserSync.reload({ stream: true }));
+});
 
-// gulp coverall testing
+// gulp coverall['./src/js/*.js', './src/jasmine/spec/*.js'] testing
 gulp.task('coveralls', ['jasmine'], () => {
   'use strict';
-  return gulp.src('src/test/coverage/**/lcov.info')
+  return gulp.src('src/spec/coverage/**/lcov.info')
     .pipe(coveralls());
 });
 
-// open jasmine test page in browser
-gulp.task('jasmine-url', ['jasmine'], function(){
-  var options = {
-    uri: 'localhost:8888',
-    app: 'firefox'
-  };
-  gulp.src(__filename) 
-  .pipe(open(options));
+// run the nodemon server reload
+gulp.task('nodemon', ['lint', 'coveralls', 'jasmine'], function (cb) {
+  'use strict';
+  let started = false;
+  return nodemon({
+    script: './bin/www',
+    watch: ['app.js'],
+    env: { 'NODE_ENV': 'development' }
+  })
+  .on('start', function () {
+    //have nodemon run watch on start
+    // to avoid nodemon being started multiple times
+    // thanks @matthisk
+    if (!started) {
+      cb();
+      started = true; 
+    } 
+  })
+  .on('restart', function onRestart() {
+    // reload connected browsers after a slight delay
+    setTimeout(function reload() {
+      browserSync.reload({
+        stream: false
+      });
+    }, BROWSER_SYNC_RELOAD_DELAY);
+  });
 });
 
 // run browsersync after nodemon runs
-gulp.task('browser-sync', ['jasmine-url'], () => {
+gulp.task('browser-sync', ['nodemon'], () => {
   browserSync.init(null, {
-    proxy: "http://localhost:3000",
-    browser: 'firefox',
-    port: 5000,
+    proxy: 'http://localhost:3000',
+    files: ['./src/sass/*.scss', './src/js/*.js', './src/public/js/*.js'],
+    browser: browser,
+    //reloadDelay: 2000,
+    port: 4000,
     ui: {
-      port: 5001
-    },
-    open: "local",
-    reloadOnRestart: true
+      port: 4001
+    }
   });
 });
- 
-// run the default task
-gulp.task('default', ['watch', 'nodemon', 'browser-sync']);
+
+// run tasks on js files - @ TODO 
+gulp.task('js',  function () {
+  return gulp.src('src/public/**/*.js');
+    // do stuff to JavaScript files
+    //.pipe(uglify())
+    //.pipe(gulp.dest('...'));
+});
+
+// reload browsers for css changes
+gulp.task('css', function () {
+  return gulp.src('src/public/**/*.css')
+    .pipe(browserSync.reload({ stream: true }));
+});
+
+
+gulp.task('bs-reload', function () {
+  browserSync.reload();
+});
+
+gulp.task('default', ['browser-sync'], function () {
+  gulp.watch(['src/js/*.js', 'src/public/js/*.js'],   ['js', browserSync.reload]);
+  gulp.watch('src/public/**/*.css',  ['css']);
+  gulp.watch('src/views/*.jade', ['bs-reload']);
+});  

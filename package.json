@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "jasmine ./src/spec/inverted-index-test.js"
   },
   "dependencies": {
     "body-parser": "~1.15.2",
@@ -11,20 +12,24 @@
     "express": "~4.14.0",
     "gulp": "^3.9.1",
     "gulp-cli": "^1.2.2",
+    "gulp-jasmine-browser": "^1.7.1",
     "gulp-open": "^2.0.0",
     "jade": "~1.11.0",
     "morgan": "~1.7.0",
     "node-sass": "",
-    "node-sass-middleware": "",
+    "node-sass-middleware": "0.10.0",
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
-    "browser-sync": "^2.17.6",
+    "browser-sync": "^2.18.1",
     "gulp-coveralls": "^0.1.4",
+    "gulp-jasmine-livereload-task": "^0.10.1",
     "gulp-jshint": "^2.0.4",
     "gulp-nodemon": "^2.2.1",
+    "gulp-open": "^2.0.0",
     "gulp-sass": "^2.3.2",
+    "gulp-watch": "^4.3.10",
     "jshint": "^2.9.4",
-    "gulp-jasmine-browser": ""
+    "webserver": "^1.1.2"
   }
 }
