@@ -1,52 +1,71 @@
-const os = require('os');
-const gulp = require('gulp');
-const nodemon = require('gulp-nodemon');
-const jshint = require('gulp-jshint');
+'use strict';
+
+const babel = require('gulp-babel');
+
+const browserify = require('browserify');
+
+const browserSync = require('browser-sync');
+
+const browserSyncJasmine = browserSync.create('jasmine');
+
+const browserSyncNode = browserSync.create('nodemon');
+
 const coveralls = require('gulp-coveralls');
-const gulpOpen = require('gulp-open');
-const browserSync = require('browser-sync').create();
+
+const eslint = require('gulp-eslint');
+
+const gulp = require('gulp');
+
+const jasmine = require('gulp-jasmine');
+
+const cover = require('gulp-coverage');
+
+const nodemon = require('gulp-nodemon');
+
+const os = require('os');
+
+const plumber = require('gulp-plumber');
+
+const nodejsPort = Math.floor(Math.random() * (3999 - 3000 + 1) + 3000);
+
+const jasminePort = Math.floor(Math.random() * (5999 - 5000 + 1) + 5000);
+
 const browser = os.platform() === 'linux' ? 'google-chrome' : (
   os.platform() === 'darwin' ? 'google chrome' : (
-  os.platform() === 'win32' ? 'chrome' : 'firefox'));
-//process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+  os.platform() === 'win32' ? 'chrome' : 'firefox')
+);
 
 // we'd need a slight delay to reload browsers
 // connected to browser-sync after restarting nodemon
 const BROWSER_SYNC_RELOAD_DELAY = 2000;
- 
+
 //gulp jshint code testing
 gulp.task('lint', () => {
-  'use strict';
-  return gulp.src(['*.js', './src/js/*.js', './src/jasmine/spec/*.js', './src/public/js/*.js'])
-    .pipe(jshint()) 
-    .pipe(jshint.reporter('default')); 
+  return gulp.src(['*.js', './controllers/*.js', './src/jasmine/spec/*.js', './src/public/js/*.js'])
+    .pipe(eslint()) 
+    .pipe(eslint.format())
 });
 
-//re-run jasmine tests on file change
-gulp.task('jasmine', ['lint'], () => {
-  gulp.src(['./src/js/*.js'])
-  .pipe(gulpOpen({
-    uri: 'src/jasmine/SpecRunner.html',
-    app: browser
-  }));
-  //.pipe(browserSync.reload({ stream: true }));
-});
-
-// gulp coverall['./src/js/*.js', './src/jasmine/spec/*.js'] testing
-gulp.task('coveralls', ['jasmine'], () => {
-  'use strict';
-  return gulp.src('src/spec/coverage/**/lcov.info')
+gulp.task('jasmine', function () {
+  return gulp.src('src/jasmine/spec/inverted-index_spec.js')
+    .pipe(cover.instrument({
+        pattern: ['controllers/*.js'],
+        debugDirectory: 'src/jasmine/spec/debug'
+    }))
+    .pipe(jasmine())
+    .pipe(cover.gather())
+    .pipe(cover.format({ reporter: 'lcov' }))
+    .pipe(gulp.dest('src/jasmine/spec/reports'))
     .pipe(coveralls());
 });
 
 // run the nodemon server reload
-gulp.task('nodemon', ['lint', 'coveralls', 'jasmine'], function (cb) {
-  'use strict';
+gulp.task('nodemon', (cb) => {
   let started = false;
   return nodemon({
     script: './bin/www',
-    watch: ['app.js'],
-    env: { 'NODE_ENV': 'development' }
+    watch: ['app.js', 'gulpfile.js'],
+    env: {'PORT': nodejsPort, 'NODE_ENV': 'development' }
   })
   .on('start', function () {
     //have nodemon run watch on start
@@ -60,7 +79,10 @@ gulp.task('nodemon', ['lint', 'coveralls', 'jasmine'], function (cb) {
   .on('restart', function onRestart() {
     // reload connected browsers after a slight delay
     setTimeout(function reload() {
-      browserSync.reload({
+      browserSyncNode.reload({
+        stream: false
+      });
+      browserSyncJasmine.reload({
         stream: false
       });
     }, BROWSER_SYNC_RELOAD_DELAY);
@@ -68,12 +90,12 @@ gulp.task('nodemon', ['lint', 'coveralls', 'jasmine'], function (cb) {
 });
 
 // run browsersync after nodemon runs
-gulp.task('browser-sync', ['nodemon'], () => {
-  browserSync.init(null, {
-    proxy: 'http://localhost:3000',
-    files: ['./src/sass/*.scss', './src/js/*.js', './src/public/js/*.js'],
+gulp.task('browser-sync', ['scripts'], () => {
+  browserSyncNode.init(null, {
+    online: false,
+    proxy: 'http://localhost:' + nodejsPort,
+    //files: ['./src/sass/*.scss', './src/public/js/*.js'],
     browser: browser,
-    //reloadDelay: 2000,
     port: 4000,
     ui: {
       port: 4001
@@ -81,27 +103,52 @@ gulp.task('browser-sync', ['nodemon'], () => {
   });
 });
 
-// run tasks on js files - @ TODO 
-gulp.task('js',  function () {
-  return gulp.src('src/public/**/*.js');
-    // do stuff to JavaScript files
-    //.pipe(uglify())
-    //.pipe(gulp.dest('...'));
+// run browsersync for jasmine tests
+gulp.task('browser-sync-jasmine', () => {
+  browserSyncJasmine.init(null, {
+    online: false,
+    browser: browser,
+    server: {
+      baseDir: "./",
+      index: "src/jasmine/SpecRunner.html"
+    },
+    port: 9000,
+    ui: {
+      port: 9001
+    }
+  });
+});
+
+// reload browsers
+gulp.task('bs-reload', function () {
+  browserSyncNode.reload();
 });
 
 // reload browsers for css changes
-gulp.task('css', function () {
-  return gulp.src('src/public/**/*.css')
-    .pipe(browserSync.reload({ stream: true }));
+gulp.task('css', () => {
+  return gulp.src('src/public/css/*.css')
+    .pipe(browserSyncNode.reload({ stream: true }));
 });
 
-
-gulp.task('bs-reload', function () {
-  browserSync.reload();
+// convert es5 to es6
+gulp.task('scripts', function(){
+  return gulp.src('controllers/*.js')
+    .pipe(plumber({
+      errorHandler: function (error) {
+        console.log(error.message);
+        this.emit('end');
+    }}))
+    .pipe(babel({
+      presets: ['es2015']
+    }))
+    .pipe(gulp.dest('src/public/js/'))
+    .pipe(browserSyncNode.reload({stream:true}))
 });
 
-gulp.task('default', ['browser-sync'], function () {
-  gulp.watch(['src/js/*.js', 'src/public/js/*.js'],   ['js', browserSync.reload]);
-  gulp.watch('src/public/**/*.css',  ['css']);
+// gulp default tasks
+gulp.task('default', ['nodemon', 'browser-sync', 'browser-sync-jasmine', ], function () {
+  gulp.watch(['controllers/*.js'], ['scripts']); 
+  gulp.watch(['controllers/*.js', 'src/jasmine/spec/*.js'], browserSyncJasmine.reload); 
+  gulp.watch('src/public/**/*.css', ['css']);
   gulp.watch('src/views/*.jade', ['bs-reload']);
 });  
