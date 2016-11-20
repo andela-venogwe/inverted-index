@@ -1,3 +1,4 @@
+'use strict';
 class InvertedIndex{
   createIndex(file){
     this.file = file;

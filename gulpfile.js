@@ -49,12 +49,12 @@ gulp.task('lint', () => {
 gulp.task('jasmine', function () {
   return gulp.src('src/jasmine/spec/inverted-index_spec.js')
     .pipe(cover.instrument({
-        pattern: ['controllers/*.js'],
+        pattern: ['controllers/inverted-index.js'],
         debugDirectory: 'src/jasmine/spec/debug'
     }))
     .pipe(jasmine())
     .pipe(cover.gather())
-    .pipe(cover.format({ reporter: 'lcov' }))
+    .pipe(cover.format({reporter: 'lcov'}))
     .pipe(gulp.dest('src/jasmine/spec/reports'))
     .pipe(coveralls());
 });
@@ -94,7 +94,6 @@ gulp.task('browser-sync', ['scripts'], () => {
   browserSyncNode.init(null, {
     online: false,
     proxy: 'http://localhost:' + nodejsPort,
-    //files: ['./src/sass/*.scss', './src/public/js/*.js'],
     browser: browser,
     port: 4000,
     ui: {
@@ -131,7 +130,7 @@ gulp.task('css', () => {
 });
 
 // convert es5 to es6
-gulp.task('scripts', function(){
+gulp.task('scripts', ['lint'], function(){
   return gulp.src('controllers/*.js')
     .pipe(plumber({
       errorHandler: function (error) {
@@ -150,5 +149,5 @@ gulp.task('default', ['nodemon', 'browser-sync', 'browser-sync-jasmine', ], func
   gulp.watch(['controllers/*.js'], ['scripts']); 
   gulp.watch(['controllers/*.js', 'src/jasmine/spec/*.js'], browserSyncJasmine.reload); 
   gulp.watch('src/public/**/*.css', ['css']);
-  gulp.watch('src/views/*.jade', ['bs-reload']);
+  gulp.watch(['src/views/*.jade'], ['bs-reload']);
 });  
