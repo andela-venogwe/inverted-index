@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  md-sidenav.md-sidenav-left.md-whiteframe-z2(layout='column', md-component-id='left', md-is-locked-open="$mdMedia('gt-md')", md-disable-backdrop, md-whiteframe='4')
+  md-sidenav.md-sidenav-left.md-whiteframe-z2(layout='column', md-component-id='left',  md-disable-backdrop, md-whiteframe='4', md-is-locked-open="$mdMedia('gt-md')")
     md-toolbar.md-hue-2
       h1.md-toolbar-tools All Uploaded Files
     md-content(layout-margin)
@@ -10,8 +10,8 @@ block content
       md-button.md-accent(ng-click='toggleLeft()')
         | Close this Sidenav
   div(layout="column", layout-fill, role="main").relative
-    md-button.md-fab.md-fab-bottom-right(aria-label='Add', ng-click='showAdd($event)')
-      ng-md-icon(icon='add')
+    md-button.md-fab.md-fab-bottom-right(aria-label='Upload', ng-click='showPrerenderedDialog($event)')
+      ng-md-icon(icon='file_upload')
     md-toolbar(ng-show='!showSearch')
       .md-toolbar-tools
         h1
@@ -23,7 +23,7 @@ block content
           ng-md-icon(icon='more_vert')
       md-tabs.md-primary(md-stretch-tabs='', md-selected='data.selectedIndex', md-center-tabs="true")
         md-tab#tab1(aria-controls='tab1-content')
-          | Inverted Indexes
+          | Index
         md-tab#tab2(aria-controls='tab2-content')
           | Search Results
     md-toolbar.md-hue-1(ng-show='showSearch')
@@ -87,4 +87,16 @@ block content
                       svg(xmlns='http://www.w3.org/2000/svg', width='24', height='24', viewbox='0 0 24 24')
                         path(d='M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z')
                       |  More
-  
+  div(style='visibility: hidden')
+    #myDialog.md-dialog-container
+      md-dialog(aria-label="Upload Form")
+        md-content.md-padding
+          md-button.md-primary.md-raised(type="button")
+            label(for='files') SELECT YOUR JSON FILE(S)
+          input#files(type='file', accept='.json', class="ng-hide" name='file', multiple='')
+          #errorfile(style="color: #cc0000; margin-left: 10px;") this is not a JSON file
+          #upload-progress
+            .percent 0%
+        div.md-dialog-actions(layout="row")
+          span(flex)
+          md-button#abort CANCEL UPLOAD
