@@ -3,42 +3,118 @@ const app = angular.module('Index', ['ngMaterial', 'ngMdIcons']);
 app.controller('AppCtrl', function ($scope, $mdSidenav, $mdDialog) {
   $scope.toggleLeft = buildToggler('left');
   $scope.toggleRight = buildToggler('right');
+  $scope.status = '  ';
+  $scope.customFullscreen = false;
 
   function buildToggler(componentId) {
     return function() {
       $mdSidenav(componentId).toggle();
     }
   }
-  
+
   $scope.isOpenRight = function(){
       return $mdSidenav('right').isOpen();
   };
 
-  $scope.showAdd = function(ev) {
+  $scope.showPrerenderedDialog = function(ev) {
     $mdDialog.show({
       controller: DialogController,
-      template: '<md-dialog aria-label="Mango (Fruit)"> <md-content class="md-padding"> <form name="userForm"> <div layout layout-sm="column"> <md-input-container flex> <label>First Name</label> <input ng-model="user.firstName" placeholder="Placeholder text"> </md-input-container> <md-input-container flex> <label>Last Name</label> <input ng-model="theMax"> </md-input-container> </div> <md-input-container flex> <label>Address</label> <input ng-model="user.address"> </md-input-container> <div layout layout-sm="column"> <md-input-container flex> <label>City</label> <input ng-model="user.city"> </md-input-container> <md-input-container flex> <label>State</label> <input ng-model="user.state"> </md-input-container> <md-input-container flex> <label>Postal Code</label> <input ng-model="user.postalCode"> </md-input-container> </div> <md-input-container flex> <label>Biography</label> <textarea ng-model="user.biography" columns="1" md-maxlength="150"></textarea> </md-input-container> </form> </md-content> <div class="md-actions" layout="row"> <span flex></span> <md-button ng-click="answer(\'not useful\')"> Cancel </md-button> <md-button ng-click="answer(\'useful\')" class="md-primary"> Save </md-button> </div></md-dialog>',
+      contentElement: '#myDialog',
+      parent: angular.element(document.body),
       targetEvent: ev,
-    })
-    .then(function(answer) {
-      $scope.alert = 'You said the information was "' + answer + '".';
-    }, function() {
-      $scope.alert = 'You cancelled the dialog.';
+      clickOutsideToClose: true
     });
   };
+
+  function DialogController($scope, $mdDialog) {
+    $scope.hide = function() {
+      $mdDialog.hide();
+    };
+
+    $scope.cancel = function() {
+      $mdDialog.cancel();
+    };
+
+    $scope.cancel = function() {
+      $mdDialog.cancel();
+    };
+  }
 });
 
-function DialogController($scope, $mdDialog) {
-  $scope.hide = function() {
-    $mdDialog.hide();
-  };
-  $scope.cancel = function() {
-    $mdDialog.cancel();
-  };
-  $scope.answer = function(answer) {
-    $mdDialog.hide(answer);
-  };
-};
+const indexFiles = {};
+document.getElementById('upload-progress').style.display = 'none';
+document.getElementById('errorfile').style.display = 'none';
+function handleFileSelect(evt) {
+  // Read in the image file as a binary string.
+  //reader.readAsText(evt.target.files[0]);
+  const files = evt.target.files;
+  for (file of files){
+    if (!file.type.match('\.json$')) {
+      document.getElementById('errorfile').style.display = 'block';
+      document.getElementById('upload-progress').style.display = 'none';
+      continue;
+    }
+    document.getElementById('errorfile').style.display = 'none';
+    let reader = new FileReader();
+    const progress = document.querySelector('.percent');
+    // Reset progress indicator on new file selection.
+    progress.style.width = '0%';
+    progress.textContent = '0%';
+    reader.onerror = errorHandler;
+    reader.onprogress = updateProgress;
+    reader.onabort = function(e) {
+      //alert('File read cancelled');
+    };
+    reader.onloadstart = function(e) {
+      document.getElementById('upload-progress').style.display = 'none';
+      document.getElementById('upload-progress').style.display = 'block';
+      document.getElementById('upload-progress').className = 'loading';
+    };
+    reader.onload = function(e) {
+      // Ensure that the progress bar displays 100% at the end.
+      progress.style.width = '100%';
+      progress.textContent = '100%';
+      //setTimeout("document.getElementById('upload-progress').className='';", 2000);
+      indexFiles[file.name] = e.target.result;
+      console.log(indexFiles)
+    }
+
+    function abortRead() {
+      reader.abort();
+    }
+    document.getElementById('abort').addEventListener('click', abortRead, false);
+
+    function errorHandler(evt) {
+      switch(evt.target.error.code) {
+        case evt.target.error.NOT_FOUND_ERR:
+          alert('File Not Found!');
+          break;
+        case evt.target.error.NOT_READABLE_ERR:
+          alert('File is not readable');
+          break;
+        case evt.target.error.ABORT_ERR:
+          break; // noop
+        default:
+          alert('An error occurred reading this file.');
+      };
+    }
+
+    function updateProgress(evt) {
+      // evt is an ProgressEvent.
+      if (evt.lengthComputable) {
+        var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+        // Increase the progress bar length.
+        if (percentLoaded < 100) {
+          progress.style.width = percentLoaded + '%';
+          progress.textContent = percentLoaded + '%';
+        }
+      }
+    }
+    reader.readAsText(file);
+  }
+}
+
+document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
 app.config(function($mdThemingProvider) {
   var customBlueMap =     $mdThemingProvider.extendPalette('light-blue', {
