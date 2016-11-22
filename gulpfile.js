@@ -43,13 +43,13 @@ const BROWSER_SYNC_RELOAD_DELAY = 2000;
 
 //gulp jshint code testing
 gulp.task('lint', () => {
-  return gulp.src(['*.js', './controllers/*.js', './src/jasmine/spec/*.js', './src/public/js/*.js'])
+  return gulp.src(['*.js', './src/js/*.js', './src/jasmine/spec/*.js', './src/public/js/*.js'])
     .pipe(eslint()) 
     .pipe(eslint.format())
 });
 
 gulp.task('istanbul', function () {
-  return gulp.src(['./*.js', 'controllers/*.js', 'src/public/js/app.js'])
+  return gulp.src(['src/public/js/app.js'])
     .pipe(istanbul({includeUntested: true}))
     .pipe(istanbul.hookRequire());
 });
@@ -138,7 +138,7 @@ gulp.task('css', () => {
 
 // convert es5 to es6
 gulp.task('scripts', ['lint'], function(){
-  return gulp.src('controllers/*.js')
+  return gulp.src('src/js/*.js')
     .pipe(plumber({
       errorHandler: function (error) {
         console.log(error.message);
@@ -153,8 +153,8 @@ gulp.task('scripts', ['lint'], function(){
 
 // gulp default tasks
 gulp.task('default', ['nodemon', 'browser-sync', 'browser-sync-jasmine', ], function () {
-  gulp.watch(['controllers/*.js'], ['scripts']); 
-  gulp.watch(['controllers/*.js', 'src/jasmine/spec/*.js'], browserSyncJasmine.reload); 
+  gulp.watch(['src/js/*.js'], ['scripts']); 
+  gulp.watch(['src/jasmine/*.js', 'src/jasmine/spec/*.js'], browserSyncJasmine.reload); 
   gulp.watch(['src/sass/*.scss', 'src/public/**/*.css'], ['css']);
   gulp.watch(['src/views/*.jade', 'src/public/js/*.js'], ['bs-reload']);
 });  

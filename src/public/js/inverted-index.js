@@ -63,3 +63,5 @@ var Index = function () {
 
     return Index;
 }();
+
+module.exports = Index;
