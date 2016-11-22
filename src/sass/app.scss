@@ -1,4 +1,5 @@
 $gray: #eee;
+$pink: #ff078;
 
 md-content.md-default-theme {
   background-color: $gray;
@@ -27,7 +28,8 @@ md-sidenav {
 }
 
 .md-button {
-  line-height: 0px;    
+  line-height: 0px; 
+  min-width: auto;   
 }
 
 .md-button.md-fab {
@@ -58,28 +60,24 @@ md-sidenav {
 #upload-progress {
   margin: 10px 0;
   padding: 3px;
-  border: 1px solid #000;
+  border: 1px solid $gray;
   font-size: 14px;
   clear: both;
   opacity: 0;
-  -moz-transition: opacity 1s linear;
-  -o-transition: opacity 1s linear;
-  -webkit-transition: opacity 1s linear;
+  transition: opacity 5s linear;
   &.loading {
     opacity: 1.0;
   }
   .percent {
-    background-color: #99ccff;
+    background-color: $pink;
     height: auto;
     width: 0;
   }
 }
 
-.md-button {
-  min-width: auto;
-}
+
 
 md-input-container .md-input {
-  margin-top: 30px !important;
+  margin-top: 30px;
   margin-left: 20px;
 }
