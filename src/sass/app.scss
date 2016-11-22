@@ -14,6 +14,26 @@ md-toolbar {
     border-radius: 99%; // round toolbar buttons
   }
 }
+
+md-sidenav {
+  min-width: 200px !important;
+  width: 85vw !important;
+  max-width: 400px !important;
+  &.md-locked-open, &.md-closed.md-locked-open-add-active {
+    min-width: 200px !important;
+    width: 85vw !important;
+    max-width: 400px !important;
+  }
+}
+
+.md-button {
+  line-height: 0px;    
+}
+
+.md-button.md-fab {
+  line-height: 15px;
+}
+
 h2 {
   font-weight: 400;
 }
@@ -53,4 +73,13 @@ md-sidenav {
     height: auto;
     width: 0;
   }
+}
+
+.md-button {
+  min-width: auto;
+}
+
+md-input-container .md-input {
+  margin-top: 30px !important;
+  margin-left: 20px;
 }

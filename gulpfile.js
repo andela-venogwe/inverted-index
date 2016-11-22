@@ -16,6 +16,8 @@ const eslint = require('gulp-eslint');
 
 const gulp = require('gulp');
 
+const istanbul = require('gulp-istanbul');
+
 const jasmine = require('gulp-jasmine');
 
 const cover = require('gulp-coverage');
@@ -46,17 +48,22 @@ gulp.task('lint', () => {
     .pipe(eslint.format())
 });
 
-gulp.task('jasmine', function () {
-  return gulp.src('src/jasmine/spec/inverted-index_spec.js')
-    .pipe(cover.instrument({
-        pattern: ['controllers/inverted-index.js'],
-        debugDirectory: 'src/jasmine/spec/debug'
-    }))
+gulp.task('istanbul', function () {
+  return gulp.src(['./*.js', 'controllers/*.js', 'src/public/js/app.js'])
+    .pipe(istanbul({includeUntested: true}))
+    .pipe(istanbul.hookRequire());
+});
+
+gulp.task('jasmine', ['istanbul'], function () {
+  return gulp.src('src/jasmine/spec/inverted-index-test.js')
     .pipe(jasmine())
-    .pipe(cover.gather())
-    .pipe(cover.format({reporter: 'lcov'}))
-    .pipe(gulp.dest('src/jasmine/spec/reports'))
-    .pipe(coveralls());
+    .pipe(istanbul.writeReports({
+      reporters: [ 'lcov' ],
+    }))
+    .on('end', function(){
+      gulp.src('/coverage/lcov.info')
+      .pipe(coveralls());
+    })
 });
 
 // run the nodemon server reload
@@ -123,7 +130,7 @@ gulp.task('bs-reload', function () {
   browserSyncNode.reload();
 });
 
-// reload browsers for css changes
+// reload browsers for scss changes
 gulp.task('css', () => {
   return gulp.src('src/public/css/*.css')
     .pipe(browserSyncNode.reload({ stream: true }));
@@ -148,6 +155,6 @@ gulp.task('scripts', ['lint'], function(){
 gulp.task('default', ['nodemon', 'browser-sync', 'browser-sync-jasmine', ], function () {
   gulp.watch(['controllers/*.js'], ['scripts']); 
   gulp.watch(['controllers/*.js', 'src/jasmine/spec/*.js'], browserSyncJasmine.reload); 
-  gulp.watch('src/public/**/*.css', ['css']);
-  gulp.watch(['src/views/*.jade'], ['bs-reload']);
+  gulp.watch(['src/sass/*.scss', 'src/public/**/*.css'], ['css']);
+  gulp.watch(['src/views/*.jade', 'src/public/js/*.js'], ['bs-reload']);
 });  

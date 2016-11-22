@@ -1,10 +1,17 @@
 const app = angular.module('Index', ['ngMaterial', 'ngMdIcons']);
+const indexFiles = {};
+const uploaded = [];
+const fileNames = [];
+let count = 0;
+document.getElementById('upload-progress').style.display = 'none';
+document.getElementById('errorfile').style.display = 'none';
 
 app.controller('AppCtrl', function ($scope, $mdSidenav, $mdDialog) {
   $scope.toggleLeft = buildToggler('left');
   $scope.toggleRight = buildToggler('right');
   $scope.status = '  ';
   $scope.customFullscreen = false;
+  $scope.menu = uploaded;
 
   function buildToggler(componentId) {
     return function() {
@@ -17,6 +24,7 @@ app.controller('AppCtrl', function ($scope, $mdSidenav, $mdDialog) {
   };
 
   $scope.showPrerenderedDialog = function(ev) {
+    document.getElementById('errorfile').style.display = 'none';
     $mdDialog.show({
       controller: DialogController,
       contentElement: '#myDialog',
@@ -30,30 +38,42 @@ app.controller('AppCtrl', function ($scope, $mdSidenav, $mdDialog) {
     $scope.hide = function() {
       $mdDialog.hide();
     };
-
-    $scope.cancel = function() {
-      $mdDialog.cancel();
-    };
-
     $scope.cancel = function() {
       $mdDialog.cancel();
     };
   }
+
+  // table data
+  
 });
 
-const indexFiles = {};
-document.getElementById('upload-progress').style.display = 'none';
-document.getElementById('errorfile').style.display = 'none';
 function handleFileSelect(evt) {
   // Read in the image file as a binary string.
   //reader.readAsText(evt.target.files[0]);
   const files = evt.target.files;
   for (file of files){
-    if (!file.type.match('\.json$')) {
+    if (!file.type.match('\.json$') || uploaded.indexOf(file.name) != -1) {
       document.getElementById('errorfile').style.display = 'block';
       document.getElementById('upload-progress').style.display = 'none';
       continue;
     }
+    
+    if(fileNames.indexOf(file.name) == -1){
+      fileNames.push(file.name);
+      uploaded.push({
+        title: file['name'].slice(0,10),
+        icon: 'cloud_done',
+        getindex: 'Create Index',
+        createindex: 'Get Index',
+      });
+    }
+
+    else{
+      document.getElementById('errorfile').style.display = 'block';
+      document.getElementById('upload-progress').style.display = 'none';
+      continue;
+    }
+    
     document.getElementById('errorfile').style.display = 'none';
     let reader = new FileReader();
     const progress = document.querySelector('.percent');
@@ -74,15 +94,13 @@ function handleFileSelect(evt) {
       // Ensure that the progress bar displays 100% at the end.
       progress.style.width = '100%';
       progress.textContent = '100%';
-      //setTimeout("document.getElementById('upload-progress').className='';", 2000);
+
       indexFiles[file.name] = e.target.result;
-      console.log(indexFiles)
     }
 
     function abortRead() {
       reader.abort();
     }
-    document.getElementById('abort').addEventListener('click', abortRead, false);
 
     function errorHandler(evt) {
       switch(evt.target.error.code) {
@@ -113,6 +131,18 @@ function handleFileSelect(evt) {
     reader.readAsText(file);
   }
 }
+
+
+(function(){
+  for(doc in indexFiles){
+    document.getElementById(doc + 'Get').addEventListener('click', () =>{
+      console.log(new Index().createIndex(indexFiles[file.name]));
+    });
+    document.getElementById(doc + 'Create').addEventListener('click', () =>{
+      console.log(new Index().createIndex(indexFiles[file.name]));
+    });
+  }
+})();
 
 document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
