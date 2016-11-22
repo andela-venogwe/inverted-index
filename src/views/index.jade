@@ -95,11 +95,6 @@ block content
                     md-button.md-primary(layout='', layout-align='start center', flex='')
                       ng-md-icon(icon="keyboard_backspace")
                       |  Prev
-                    md-item.inset(layout='')
-                    md-button.md-primary(layout='', layout-align='start center', flex)
-                      svg(xmlns='http://www.w3.org/2000/svg', width='24', height='24', viewbox='0 0 24 24')
-                        path(d='M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z')
-                      |  Next
   div(style='visibility: hidden')
     #myDialog.md-dialog-container
       md-dialog(aria-label="Upload Form")
@@ -108,5 +103,5 @@ block content
             label(for='files') SELECT YOUR JSON FILE(S)
           input#files(type='file', accept='.json', class="ng-hide" name='file', multiple='')
           #errorfile(style="color: #cc0000; margin-left: 10px;") this is not a JSON file or you have already uploaded this file (please rename file if you haven't uploaded it before.)
-          #upload-progress
+          #upload-progress.upload-progress
             .percent 0%

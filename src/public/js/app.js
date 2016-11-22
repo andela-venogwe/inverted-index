@@ -88,14 +88,26 @@ function handleFileSelect(evt) {
     reader.onloadstart = function(e) {
       document.getElementById('upload-progress').style.display = 'none';
       document.getElementById('upload-progress').style.display = 'block';
-      document.getElementById('upload-progress').className = 'loading';
+      document.getElementById('upload-progress').className = 'upload-progress loading';
     };
     reader.onload = function(e) {
       // Ensure that the progress bar displays 100% at the end.
       progress.style.width = '100%';
+      progress.style.background = '#ddd';
       progress.textContent = '100%';
-
       indexFiles[file.name] = e.target.result;
+
+      // add events listener for docs on file load
+      (function(){
+        for(doc in indexFiles){
+          document.getElementById(doc + 'Get').addEventListener('click', () => {
+            console.log(new Index().createIndex(indexFiles[file.name]));
+          });
+          document.getElementById(doc + 'Create').addEventListener('click', () => {
+            console.log(new Index().createIndex(indexFiles[file.name]));
+          });
+        }
+      })();
     }
 
     function abortRead() {
@@ -131,18 +143,6 @@ function handleFileSelect(evt) {
     reader.readAsText(file);
   }
 }
-
-
-(function(){
-  for(doc in indexFiles){
-    document.getElementById(doc + 'Get').addEventListener('click', () =>{
-      console.log(new Index().createIndex(indexFiles[file.name]));
-    });
-    document.getElementById(doc + 'Create').addEventListener('click', () =>{
-      console.log(new Index().createIndex(indexFiles[file.name]));
-    });
-  }
-})();
 
 document.getElementById('files').addEventListener('change', handleFileSelect, false);
 

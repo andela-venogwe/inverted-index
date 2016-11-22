@@ -57,27 +57,26 @@ md-sidenav {
   }
 }
 
-#upload-progress {
-  margin: 10px 0;
-  padding: 3px;
-  border: 1px solid $gray;
-  font-size: 14px;
+.upload-progress {
   clear: both;
+  font-size: 14px;
+  margin: 10px 0;
   opacity: 0;
+  padding: 3px;
   transition: opacity 5s linear;
   &.loading {
     opacity: 1.0;
   }
   .percent {
     background-color: $pink;
-    height: auto;
     width: 0;
+    height: auto;
   }
 }
 
 
 
 md-input-container .md-input {
-  margin-top: 30px;
   margin-left: 20px;
+  margin-top: 30px;
 }
