@@ -1,152 +1,149 @@
 const app = angular.module('Index', ['ngMaterial', 'ngMdIcons']);
-const indexFiles = {};
 const uploaded = [];
 const fileNames = [];
-let count = 0;
-document.getElementById('upload-progress').style.display = 'none';
-document.getElementById('errorfile').style.display = 'none';
 
-app.controller('AppCtrl', function ($scope, $mdSidenav, $mdDialog) {
+app.controller('InvertedIndexController', invertedIndexController);
+
+function invertedIndexController($scope, $mdSidenav, $mdDialog) {
   $scope.toggleLeft = buildToggler('left');
-  $scope.toggleRight = buildToggler('right');
-  $scope.status = '  ';
   $scope.customFullscreen = false;
+  $scope.isOpenRight = openRight;
+  $scope.showUploadBox = uploadBox;
+  $scope.closeDialog = dialogClose;
+  $scope.select = selectJson;
+  $scope.fileSelect = jsonChoose;
+  $scope.upload = uploadJson;
   $scope.menu = uploaded;
+  $scope.progress = 0;
 
+  // menu toggler
   function buildToggler(componentId) {
     return function() {
       $mdSidenav(componentId).toggle();
     }
   }
-
-  $scope.isOpenRight = function(){
+  
+  // check open menu on page load
+  function openRight(){
       return $mdSidenav('right').isOpen();
   };
 
-  $scope.showPrerenderedDialog = function(ev) {
-    document.getElementById('errorfile').style.display = 'none';
+  // upload file dialog box
+  function uploadBox($event) {
     $mdDialog.show({
-      controller: DialogController,
       contentElement: '#myDialog',
       parent: angular.element(document.body),
-      targetEvent: ev,
-      clickOutsideToClose: true
+      targetEvent: $event,
+      clickOutsideToClose: false,
+      fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
     });
+    document.getElementById('upload').disabled = true;
   };
 
-  function DialogController($scope, $mdDialog) {
-    $scope.hide = function() {
-      $mdDialog.hide();
-    };
-    $scope.cancel = function() {
-      $mdDialog.cancel();
-    };
-  }
-
-  // table data
+  // close dialog box
+  function dialogClose() {
+    document.getElementById('selected-files').innerHTML = '';
+    document.getElementById('upload-input').value = '';
+    document.getElementById('upload').disabled = true;
+    document.getElementById('upload-done').style.display = 'none';
+    document.getElementById('upload-failed').style.display = 'none';
+    $scope.progress = 0;
+    $mdDialog.hide();
+  };
   
-});
-
-function handleFileSelect(evt) {
-  // Read in the image file as a binary string.
-  //reader.readAsText(evt.target.files[0]);
-  const files = evt.target.files;
-  for (file of files){
-    if (!file.type.match('\.json$') || uploaded.indexOf(file.name) != -1) {
-      document.getElementById('errorfile').style.display = 'block';
-      document.getElementById('upload-progress').style.display = 'none';
-      continue;
-    }
-    
-    if(fileNames.indexOf(file.name) == -1){
-      fileNames.push(file.name);
-      uploaded.push({
-        title: file['name'].slice(0,10),
-        icon: 'cloud_done',
-        getindex: 'Create Index',
-        createindex: 'Get Index',
-      });
-    }
-
-    else{
-      document.getElementById('errorfile').style.display = 'block';
-      document.getElementById('upload-progress').style.display = 'none';
-      continue;
-    }
-    
-    document.getElementById('errorfile').style.display = 'none';
-    let reader = new FileReader();
-    const progress = document.querySelector('.percent');
-    // Reset progress indicator on new file selection.
-    progress.style.width = '0%';
-    progress.textContent = '0%';
-    reader.onerror = errorHandler;
-    reader.onprogress = updateProgress;
-    reader.onabort = function(e) {
-      //alert('File read cancelled');
-    };
-    reader.onloadstart = function(e) {
-      document.getElementById('upload-progress').style.display = 'none';
-      document.getElementById('upload-progress').style.display = 'block';
-      document.getElementById('upload-progress').className = 'upload-progress loading';
-    };
-    reader.onload = function(e) {
-      // Ensure that the progress bar displays 100% at the end.
-      progress.style.width = '100%';
-      progress.style.background = '#ddd';
-      progress.textContent = '100%';
-      indexFiles[file.name] = e.target.result;
-
-      // add events listener for docs on file load
-      (function(){
-        for(doc in indexFiles){
-          document.getElementById(doc + 'Get').addEventListener('click', () => {
-            console.log(new Index().createIndex(indexFiles[file.name]));
-          });
-          document.getElementById(doc + 'Create').addEventListener('click', () => {
-            console.log(new Index().createIndex(indexFiles[file.name]));
-          });
-        }
-      })();
-    }
-
-    function abortRead() {
-      reader.abort();
-    }
-
-    function errorHandler(evt) {
-      switch(evt.target.error.code) {
-        case evt.target.error.NOT_FOUND_ERR:
-          alert('File Not Found!');
-          break;
-        case evt.target.error.NOT_READABLE_ERR:
-          alert('File is not readable');
-          break;
-        case evt.target.error.ABORT_ERR:
-          break; // noop
-        default:
-          alert('An error occurred reading this file.');
-      };
-    }
-
-    function updateProgress(evt) {
-      // evt is an ProgressEvent.
-      if (evt.lengthComputable) {
-        var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
-        // Increase the progress bar length.
-        if (percentLoaded < 100) {
-          progress.style.width = percentLoaded + '%';
-          progress.textContent = percentLoaded + '%';
-        }
-      }
-    }
-    reader.readAsText(file);
+  // select json files for upload
+  function selectJson(){
+    document.getElementById('upload-input').click();
+    document.getElementById('upload-done').style.display = 'none';
+    document.getElementById('upload-failed').style.display = 'none';
+    $scope.progress = 0;
   }
+
+  //monitor input change
+  function jsonChoose(){
+    $scope.files = document.getElementById('upload-input').files;
+    $scope.fileKeys = Object.keys($scope.files).filter(function(key){
+      return key !== 'length';
+    });
+    document.getElementById('selected-files').innerHTML = '';
+    $scope.filesSelected = $scope.fileKeys.map(function(file) {
+      return $scope.files[file]['name'];
+    })
+    .forEach((item) => {
+      document.getElementById('selected-files')
+      .innerHTML += '<md-list-item><p>' + item + '</p></md-list-item>'
+    });
+    document.getElementById('upload').disabled = false;
+  }
+
+  // upload json file(s) function
+  function uploadJson(e){
+    document.getElementById('upload').disabled = true;
+    // create a FormData object which will be sent as the data payload in the
+    // AJAX request
+    const files = $(this).get(0).files;
+    const formData = new FormData();
+
+    // loop through all the selected files and add them to the formData object
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (fileNames.indexOf(file.name) != -1){
+        document.getElementById('upload-failed').style.display = 'block';
+        document.getElementById('upload-input').value = '';
+        document.getElementById('selected-files').innerHTML = '';
+        return;
+      }
+      // add the files to formData object for the data payload
+      formData.append('uploads[]', file, file.name);
+    }
+
+    // do ajax file upload
+    $.ajax({
+      url: '/upload',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      data: formData,
+      enctype: 'multipart/form-data',
+      success: function(data){
+        if($scope.progress == 100){
+          document.getElementById('upload-done').style.display = 'block';
+          for (file of files){
+            uploaded.push({
+              title: file['name'],
+              icon: 'cloud_done',
+              getindex: 'GET INDEX',
+              createindex: 'CREATE INDEX',
+            });
+            fileNames.push(file.name);
+          }
+          document.getElementById('upload-input').value = '';
+          document.getElementById('selected-files').innerHTML = '';
+        }
+      },
+      xhr: function() {
+        // create an XMLHttpRequest
+        const xhr = new XMLHttpRequest();
+
+        // listen to the 'progress' event
+        xhr.upload.addEventListener('progress', function(evt) {
+
+          if (evt.lengthComputable) {
+            // calculate the percentage of upload completed
+            // update the Materail progress bar with the new percentage
+            $scope.progress = parseInt(evt.loaded / evt.total) * 100;
+          }
+
+        }, false);
+
+        return xhr;
+      }
+    });
+  } // end upload
 }
 
-document.getElementById('files').addEventListener('change', handleFileSelect, false);
-
-app.config(function($mdThemingProvider) {
+function themeMaterial($mdThemingProvider) {
   var customBlueMap =     $mdThemingProvider.extendPalette('light-blue', {
     'contrastDefaultColor': 'light',
     'contrastDarkColors': ['50'],
@@ -162,4 +159,7 @@ app.config(function($mdThemingProvider) {
     .accentPalette('pink');
   $mdThemingProvider.theme('input', 'default')
         .primaryPalette('grey')
-});
+}
+
+
+app.config(themeMaterial);

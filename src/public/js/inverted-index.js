@@ -4,14 +4,18 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Index = function () {
-    function Index() {
-        _classCallCheck(this, Index);
+var invertedIndex = function () {
+    function invertedIndex() {
+        _classCallCheck(this, invertedIndex);
+
+        this.index = '';
     }
 
-    _createClass(Index, [{
+    _createClass(invertedIndex, [{
         key: 'createIndex',
         value: function createIndex(file) {
+            var _this = this;
+
             //get unique array values
             Array.prototype.contains = function (v) {
                 for (var i = 0; i < this.length; i++) {
@@ -19,7 +23,7 @@ var Index = function () {
                 }
                 return false;
             };
-
+            //get unique array values
             Array.prototype.unique = function () {
                 var arr = [];
                 for (var i = 0; i < this.length; i++) {
@@ -29,39 +33,19 @@ var Index = function () {
                 }
                 return arr;
             };
-            this.file = file;
-            count++;
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
 
-            try {
-                for (var _iterator = this.file[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var i = _step.value;
+            // loop through file and check
+            file.forEach(function (position) {
+                _this.index += position.title + ' ' + position.text;
+            });
 
-                    this.ind += i.title + ' ' + i.text;
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
+            this.tokens = this.index.toLowerCase().match(/\w+/g).unique().sort();
 
-            this.index = 'Doc_' + count + ' ' + this.ind;
-            return this.index.toLowerCase().match(/\w+/g).unique();
+            this.tokens.forEach(function (token) {
+                ref['token'] !== undefined ? ref[file.name].push(token) : ref[file.name] = [token];
+            });
         }
     }]);
 
-    return Index;
+    return invertedIndex;
 }();
-
-module.exports = Index;

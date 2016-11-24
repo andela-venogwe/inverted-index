@@ -21,7 +21,7 @@ block content
       md-button.md-accent(ng-click='toggleLeft()')
         | Close this Sidenav
   div(layout="column", layout-fill, role="main").relative
-    md-button.md-fab.md-fab-bottom-right(aria-label='Upload', ng-click='showPrerenderedDialog($event)')
+    md-button.md-fab.md-fab-bottom-right(aria-label='Upload', ng-click='showUploadBox($event)')
       ng-md-icon(icon='file_upload')
     md-toolbar(ng-show='!showSearch')
       .md-toolbar-tools
@@ -70,7 +70,7 @@ block content
                     md-divider(hide-gt-sm='', ng-if='!$last')
                   md-divider
                   md-item.inset(layout='')
-                    md-button.md-primary(layout='', layout-align='start center', flex='')
+                    md-button.md-primary(layout='', layout-align='start center')
                       svg(xmlns='http://www.w3.org/2000/svg', width='24', height='24', viewbox='0 0 24 24')
                         path(d='M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z')
                       |  More
@@ -92,16 +92,32 @@ block content
                     md-divider(hide-gt-sm='', ng-if='!$last')
                   md-divider
                   md-item.inset(layout='')
-                    md-button.md-primary(layout='', layout-align='start center', flex='')
+                    md-button.md-primary(layout='', layout-align='start center')
                       ng-md-icon(icon="keyboard_backspace")
                       |  Prev
   div(style='visibility: hidden')
     #myDialog.md-dialog-container
       md-dialog(aria-label="Upload Form")
-        md-content.md-padding
-          md-button.md-primary.md-raised(type="button")
-            label(for='files') SELECT YOUR JSON FILE(S)
-          input#files(type='file', accept='.json', class="ng-hide" name='file', multiple='')
-          #errorfile(style="color: #cc0000; margin-left: 10px;") this is not a JSON file or you have already uploaded this file (please rename file if you haven't uploaded it before.)
-          #upload-progress.upload-progress
-            .percent 0%
+        md-toolbar
+          .md-toolbar-tools
+            h2 JSON FILE UPLOADER
+            span(flex="")
+            md-button.md-icon-button(ng-click="closeDialog()")
+              ng-md-icon(icon="close", aria-label="Close dialog")
+        md-dialog-content(style="max-width:800px;max-height:810px; ")
+          md-content.md-padding(layout="column")
+            p(style="text-align: center")
+              md-button.md-raised.md-primary(style="width:200px", ng-click="select()") 
+                | SELECT FILES 
+            p#upload-done(style="display: none; color: green; text-align: center") upload complete
+            p#upload-failed(style="display: none; color: red; text-align: center") upload failed. file exists already
+            md-list#selected-files
+            input#upload-input.ng-hide(type="file", ,="", accept=".json", name="uploads[]", multiple="multiple" onchange="angular.element(this).scope().fileSelect()", ngf-pattern='application/json')
+            md-progress-linear(md-mode="determinate", value="{{progress}}")
+        md-dialog-actions(layout="row")
+          md-button(ng-click="closeDialog()")
+            | CLOSE THIS
+          span(flex)
+          md-button#upload.md-primary(md-no-ink, ng-click="upload()", style="margin-right:20px;")
+            | UPLOAD JSON FILE(S)
+

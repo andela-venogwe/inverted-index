@@ -5,6 +5,9 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const sass = require('node-sass-middleware');
 const index = require('./routes/index');
+const uploads = require('./routes/uploads');
+const formidable = require('formidable');
+const fs = require('fs');
 
 const app = express();
 
@@ -38,6 +41,8 @@ app.use(
 app.use(express.static(path.join(__dirname, 'src/public')));
 
 app.use('/', index);
+
+app.use('/', uploads);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
