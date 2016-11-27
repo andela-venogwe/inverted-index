@@ -1,10 +1,11 @@
 const app = angular.module('Index', ['ngMaterial', 'ngMdIcons']);
+const appIndex = new InvertedIndex();
 const uploaded = [];
 const fileNames = [];
 
 app.controller('InvertedIndexController', invertedIndexController);
 
-function invertedIndexController($scope, $mdSidenav, $mdDialog) {
+function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $document) {
   $scope.toggleLeft = buildToggler('left');
   $scope.customFullscreen = false;
   $scope.isOpenRight = openRight;
@@ -15,6 +16,10 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog) {
   $scope.upload = uploadJson;
   $scope.menu = uploaded;
   $scope.progress = 0;
+  $scope.getIndex = getIndex;
+  $scope.createIndex = createIndex;
+  $scope.reference = appIndex.reference;
+  $scope.uploadedFileContents = appIndex.docFiles;
 
   // menu toggler
   function buildToggler(componentId) {
@@ -65,7 +70,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog) {
     $scope.fileKeys = Object.keys($scope.files).filter(function(key){
       return key !== 'length';
     });
-    document.getElementById('selected-files').innerHTML = '';
+    // document.getElementById('selected-files').innerHTML = '';
     $scope.filesSelected = $scope.fileKeys.map(function(file) {
       return $scope.files[file]['name'];
     })
@@ -87,7 +92,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog) {
     // loop through all the selected files and add them to the formData object
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      if (fileNames.indexOf(file.name) != -1){
+      if (fileNames.indexOf(file.name) != -1 || !file.type.match('\.json$')){
         document.getElementById('upload-failed').style.display = 'block';
         document.getElementById('upload-input').value = '';
         document.getElementById('selected-files').innerHTML = '';
@@ -107,20 +112,18 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog) {
       data: formData,
       enctype: 'multipart/form-data',
       success: function(data){
-        if($scope.progress == 100){
-          document.getElementById('upload-done').style.display = 'block';
-          for (file of files){
-            uploaded.push({
-              title: file['name'],
-              icon: 'cloud_done',
-              getindex: 'GET INDEX',
-              createindex: 'CREATE INDEX',
-            });
-            fileNames.push(file.name);
-          }
-          document.getElementById('upload-input').value = '';
-          document.getElementById('selected-files').innerHTML = '';
+        document.getElementById('upload-done').style.display = 'block';
+        for (file of files){
+          uploaded.push({
+            title: file['name'],
+            icon: 'cloud_done',
+            getindex: 'GET INDEX',
+            createindex: 'CREATE INDEX',
+          });
+          fileNames.push(file.name);
         }
+        document.getElementById('upload-input').value = '';
+        document.getElementById('selected-files').innerHTML = '';
       },
       xhr: function() {
         // create an XMLHttpRequest
@@ -132,7 +135,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog) {
           if (evt.lengthComputable) {
             // calculate the percentage of upload completed
             // update the Materail progress bar with the new percentage
-            $scope.progress = parseInt(evt.loaded / evt.total) * 100;
+            $scope.progress = parseInt(evt.loaded / evt.total);
           }
 
         }, false);
@@ -141,7 +144,64 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog) {
       }
     });
   } // end upload
+   
+  // show message on create index or get index
+  const showMessage = (messageType) => {
+    let message = '';
+    messageType == 'get' ? (message = 'View Populated with index!') :
+    (message = 'Index Has Been Created!');
+    $mdToast.show(
+      $mdToast.simple()
+        .textContent(message)
+        .position('left')
+        .hideDelay(3000)
+    );
+  };
+
+  // show get index message
+  $scope.showGetIndexMessage = showMessage;
+
+  // show create index message
+  $scope.showCreateIndexMessage = showMessage;
+
+  //get index function
+  function getIndex(a){
+    new Promise((resolve, reject) => {
+      resolve(appIndex.getIndex(a))
+    })
+    .then(() => {
+      document.getElementById(b + 'Get').disabled = true;
+    })
+    .catch(function(err) {
+      return err;
+    });
+  }
+
+  //create index function
+  function createIndex(b){
+    new Promise((resolve, reject) => {
+      resolve(appIndex.createIndex(b))
+    })
+    .then(() => {
+      document.getElementById(b + 'Create').visibility = 'hidden';
+    })
+    .catch(function(err) {
+      return err;
+    });
+    console.log(appIndex.reference);
+    console.log(appIndex.docFiles);
+    console.log(appIndex.docFileNames);
+  }
+
+  // populate view
+  function populateView(){
+    
+  }
+  
+  
 }
+
+
 
 function themeMaterial($mdThemingProvider) {
   var customBlueMap =     $mdThemingProvider.extendPalette('light-blue', {

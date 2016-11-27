@@ -13,10 +13,11 @@ block content
             .inset
               | {{item.title}}
             .inset
-              md-button.md-raised.md-primary(id="{{item.title}}Get")
+              md-button.md-raised.md-primary(id="{{item.title}}Get", ng-click="getIndex(item.title); showCreateIndexMessage('get')")
                | {{item.getindex}}
-              md-button.md-raised.md-warn(id="{{item.title}}Create")
+              md-button.md-raised.md-warn(id="{{item.title}}Create", ng-click="createIndex('uploads/' + item.title); showGetIndexMessage('create')")
                | {{item.createindex}}
+            p {{item.error || item.success}}
     md-content(layout-margin)
       md-button.md-accent(ng-click='toggleLeft()')
         | Close this Sidenav
@@ -56,45 +57,6 @@ block content
             md-card(flex-gt-sm='90', flex-gt-md='80')
               md-card-content
                 h2(style='text-align: center') Index Table
-                md-list
-                  md-item(ng-repeat='item in activity | filter:search')
-                    md-item-content
-                      .md-tile-left.inset(hide-sm='')
-                        user-avatar
-                      .md-tile-content
-                        h3 {{item.what}}
-                        h4 {{item.who}}
-                        p
-                          | {{item.notes}}
-                    md-divider(md-inset='', hide-sm='', ng-if='!$last')
-                    md-divider(hide-gt-sm='', ng-if='!$last')
-                  md-divider
-                  md-item.inset(layout='')
-                    md-button.md-primary(layout='', layout-align='start center')
-                      svg(xmlns='http://www.w3.org/2000/svg', width='24', height='24', viewbox='0 0 24 24')
-                        path(d='M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z')
-                      |  More
-          #tab2-content(role='tabpanel', aria-labelledby='tab2', ng-switch-when='1', md-swipe-left='next()', md-swipe-right='previous()', layout='row', layout-align='center center')
-            md-card(flex-gt-sm='90', flex-gt-md='80')
-              md-card-content
-                h2(style='text-align: center') Search Index
-                md-list
-                  md-item(ng-repeat="item in activity | filter:search | orderBy:'-what'")
-                    md-item-content
-                      .md-tile-left.inset(hide-sm='')
-                        user-avatar
-                      .md-tile-content
-                        h3 {{item.what}}
-                        h4 {{item.who}}
-                        p
-                          | {{item.notes}}
-                    md-divider(md-inset='', hide-sm='', ng-if='!$last')
-                    md-divider(hide-gt-sm='', ng-if='!$last')
-                  md-divider
-                  md-item.inset(layout='')
-                    md-button.md-primary(layout='', layout-align='start center')
-                      ng-md-icon(icon="keyboard_backspace")
-                      |  Prev
   div(style='visibility: hidden')
     #myDialog.md-dialog-container
       md-dialog(aria-label="Upload Form")
@@ -110,10 +72,10 @@ block content
               md-button.md-raised.md-primary(style="width:200px", ng-click="select()") 
                 | SELECT FILES 
             p#upload-done(style="display: none; color: green; text-align: center") upload complete
-            p#upload-failed(style="display: none; color: red; text-align: center") upload failed. file exists already
+            p#upload-failed(style="display: none; color: red; text-align: center") upload failed. file exists already or invalid file.
             md-list#selected-files
             input#upload-input.ng-hide(type="file", ,="", accept=".json", name="uploads[]", multiple="multiple" onchange="angular.element(this).scope().fileSelect()", ngf-pattern='application/json')
-            md-progress-linear(md-mode="determinate", value="{{progress}}")
+            md-progress-linear(md-mode="determinate", value="{{+ progress * 100}}")
         md-dialog-actions(layout="row")
           md-button(ng-click="closeDialog()")
             | CLOSE THIS

@@ -99,21 +99,18 @@ describe('Populate Index', () => {
 });
 
 describe('Search Index', () => {
-  describe('should return the correct result when searched', () => {
-    it('for single word argument', (done) => {
-      const result = index.searchIndex(['valid1.json'], index.createResultHtml, 'alice');
-      expect(result[0]).toEqual({ alice: { 'valid1.json': [0] } });
+  describe('Search results', () => {
+    it('Should return the correct result for single word searches', (done) => {
+      expect(index.searchIndex('Lord')).toEqual(10);
       done();
     });
-    it('for single word argument with non-alphanumeric', (done) => {
-      const result = index.searchIndex(['valid1.json'], index.createResultHtml, '+alice-=');
-      expect(result[0]).toEqual({ alice: { 'valid1.json': [0] } });
+    it('Should filter alphanumeric search queries', (done) => {
+      expect(index.searchIndex('ade **')).toEqual(10);
       done();
     });
 
-    it('It should return correct answer for multiple words in one argument', (done) => {
-      const result = index.searchIndex(['valid1.json'], index.createResultHtml, 'alice in');
-      expect(result[0]).toEqual({ alice: { 'valid1.json': [0] }, in : { 'valid1.json': [0] } });
+    it('Should return correct search results for multiple word queries', (done) => {
+      expect(index.searchIndex('Lord of the rings')).toEqual(0);
       done();
     });
   });
