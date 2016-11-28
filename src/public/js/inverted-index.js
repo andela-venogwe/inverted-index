@@ -11,7 +11,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var unique = function unique(arr) {
   var checked = {};
   return arr.filter(function (x) {
-    if (checked[x]) return;
+    if (checked[x]) {
+      return;
+    }
     checked[x] = true;
     return x;
   });

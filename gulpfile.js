@@ -49,21 +49,21 @@ gulp.task('lint', () => {
 });
 
 gulp.task('istanbul', function () {
-  return gulp.src(['src/public/js/app.js'])
-    .pipe(istanbul({includeUntested: true}))
-    .pipe(istanbul.hookRequire());
+  // return gulp.src(['src/public/js/app.js'])
+  //   .pipe(istanbul({includeUntested: true}))
+  //   .pipe(istanbul.hookRequire());
 });
 
 gulp.task('jasmine', ['istanbul'], function () {
-  return gulp.src('src/jasmine/spec/inverted-index-test.js')
-    .pipe(jasmine())
-    .pipe(istanbul.writeReports({
-      reporters: [ 'lcov' ],
-    }))
-    .on('end', function(){
-      gulp.src('/coverage/lcov.info')
-      .pipe(coveralls());
-    })
+  // return gulp.src('src/jasmine/spec/inverted-index-test_spec.js')
+  //   .pipe(jasmine())
+  //   .pipe(istanbul.writeReports({
+  //     reporters: [ 'lcov' ],
+  //   }))
+  //   .on('end', function(){
+  //     gulp.src('/coverage/lcov.info')
+  //     .pipe(coveralls());
+  //   })
 });
 
 // run the nodemon server reload

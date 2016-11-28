@@ -151,3 +151,15 @@ class InvertedIndex{
     }
   }
 }
+
+module.exports = {
+  InvertedIndex,
+  unique,
+  getJSON,
+  isJSON,
+  isValidObject,
+  saveTokens,
+  formatFileName,
+  populateReference,
+  populateDocFiles
+}

@@ -21,6 +21,11 @@ describe("Read book data", (done) => {
     expect(arr.length > 1).toBe(true);
     done();
   });
+  it('Should remove duplicates from array', (done) => {
+    const duplicate = ['a', 'b', 'c', 'd', 'e', 'a', 'b', 'c', 'd', 'e'];
+    expect(unique(duplicate)).toEqual(['a', 'b', 'c', 'd', 'e']);
+    done();
+  });
   it('Should return a JSON array which contains objects only', (done) => {
     let ans = true;
     let count = 0;

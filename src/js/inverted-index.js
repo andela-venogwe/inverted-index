@@ -4,11 +4,12 @@
 const unique = (arr) => {
   const checked = {}
   return arr.filter(function(x) {
-    if (checked[x])
+    if (checked[x]){
       return
+    }
     checked[x] = true
     return x;
-  })
+  });
 }
 
 /** json file reader */
