@@ -175,11 +175,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
 
   //search index function
   function searchIndex(b){
-    let results = appIndex.searchIndex(b);
-    setTimeout(() => {
-      $scope.searchResults = results;
-      console.log($scope.searchResults, $scope.uploadedFileContents);
-    }, 100)
+    $scope.searchResults = appIndex.searchIndex(b);
   } 
   
   // autocomplete search input
