@@ -160,10 +160,18 @@ class InvertedIndex{
 
   searchIndex(value){
     //search index method
-    inputFIlter(value).forEach((word) => {
-      this.currentDocs.forEach((doc) => {
-        console.log(this.reference[doc][word]);
-      })
-    });
+    this.searchReturn = {};
+    if(value !== (null || undefined)){
+      inputFIlter(value).forEach((word) => {
+        this.currentDocs.forEach((doc) => {
+          typeof this.searchReturn[doc]  == 'object' &&
+          !Array.isArray(this.searchReturn[doc])? 
+          (this.searchReturn[doc][word] = this.reference[doc][word]) : 
+          (this.searchReturn[doc] = {}, 
+            this.searchReturn[doc][word] = this.reference[doc][word]);
+        });
+      });
+      return this.searchReturn;
+    }
   }
 }

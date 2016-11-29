@@ -13,14 +13,9 @@ block content
             .inset
               | {{item.title}}
             .inset
-              //md-button.md-raised.md-primary(id="{{item.title}}Get", ng-click="getIndex(item.title); showCreateIndexMessage('get')")
-               | {{item.getindex}}
               md-button.md-raised.md-warn(id="{{item.title}}Create", ng-click="createIndex('uploads/' + item.title); showGetIndexMessage('create')")
                | {{item.createindex}}
             p {{item.error || item.success}}
-    md-content(layout-margin)
-      md-button.md-accent(ng-click='toggleLeft()')
-        | Close this Sidenav
   div(layout="column", layout-fill, role="main").relative
     md-button.md-fab.md-fab-bottom-right(aria-label='Upload', ng-click='showUploadBox($event)')
       ng-md-icon(icon='file_upload')
@@ -29,27 +24,29 @@ block content
         h1
           | Inverted Index
         span(flex)
-        md-button(aria-label='Search', ng-click='showSearch = !showSearch;')
+        md-button#tab2(aria-label='Search', ng-click='showSearch = !showSearch; data.selectedIndex = 1')
           ng-md-icon(icon='search')
         md-button(aria-label='Open Sidebar', ng-click='toggleLeft()')
           ng-md-icon(icon='more_vert')
-      md-tabs.md-primary.ng-hide(md-stretch-tabs='', md-selected='data.selectedIndex', md-center-tabs="true")
+      md-tabs.md-primary(md-stretch-tabs, md-selected='data.selectedIndex', md-center-tabs="true")
         md-tab#tab1(aria-controls='tab1-content')
           | Index
+        md-tab#tab2(aria-controls="tab2-content")
+          | Search Results
     md-toolbar.md-hue-1(ng-show='showSearch')
       .md-toolbar-tools
-        md-button(ng-click='showSearch = !showSearch; search(searchInput)', aria-label='Back')
+        md-button(ng-click='showSearch = !showSearch', aria-label='Back')
           ng-md-icon(icon='arrow_back')
         h3(flex='10')
           | Back
-        md-input-container(md-theme='input', flex='')
+        md-input-container(md-theme='input', flex)
           label  
           input(ng-model='word', ng-keyup="autoComplete(word)", placeholder='search indexes')
-        md-button(aria-label='Search', ng-click='showSearch = !showSearch; search(word)')
+        md-button(aria-label='Search', ng-click='showSearch = !showSearch; search(word);')
           ng-md-icon(icon='search')
         md-button(aria-label='Open Settings', ng-click='toggleLeft()')
           ng-md-icon(icon='more_vert')
-    md-content(flex='', md-scroll-y='')
+    md-content(flex, md-scroll-y)
       md-list(ng-model='hidethis', ng-hide='hidethis', flex)
             md-list-item(ng-repeat='item in filterWords', ng-click='fillTextbox(item)') 
               p {{item}}
@@ -61,7 +58,8 @@ block content
             md-card(flex-gt-sm='90', flex-gt-md='80')(ng-if="title")
               md-card-content
                 .wrap#data
-                  h2(style='text-align: center; text-transform: uppercase') Index:  {{title}}
+                  h2(style='text-align: center; text-transform: Capitalize') Index:  {{title}}
+                  md-divider
                   table.comparison-table
                     thead
                       tr
@@ -72,6 +70,22 @@ block content
                       td.marker(ng-repeat="item in headers")
                         span(ng-repeat="index in value")
                           span(ng-show="item == index", style="color: #7CFC00") ✔
+          #tab2-content(role='tabpanel', aria-labelledby='tab2', ng-switch-when='1', md-swipe-left='next()', md-swipe-right='previous()', layout='row', layout-align='center center')
+            md-card(flex-gt-sm='90', flex-gt-md='80')
+              md-card-content
+                h2(style='text-align: center; text-transform: Capitalize') Search Results
+                md-divider
+                .wrap#search(ng-repeat="(k, v) in searchResults")
+                  h3(margin-left: 15px;text-transform: uppercase) {{k}}
+                  table.comparison-table
+                    thead
+                      tr
+                        td.marker Words
+                        td.marker(ng-repeat="item in uploadedFileContents[k]", ng-init="wee = $index") Doc_{{$index}}
+                      tr(ng-repeat="(key, value) in v")
+                        td.marker {{key}}
+                        td.marker(ng-repeat="item in uploadedFileContents[k]")
+                          span(ng-repeat="index in v[key]")  ✔ {{wee}}
   div(style='visibility: hidden')
     #myDialog.md-dialog-container
       md-dialog(aria-label="Upload Form")
@@ -95,6 +109,6 @@ block content
           md-button(ng-click="closeDialog()")
             | CLOSE THIS
           span(flex)
-          md-button#upload.md-primary(md-no-ink, ng-click="upload()", style="margin-right:20px;")
+          md-button#upload.md-primary(md-no-ink, ng-click="upload();", style="margin-right:20px;")
             | UPLOAD JSON FILE(S)
 

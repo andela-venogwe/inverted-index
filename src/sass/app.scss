@@ -19,12 +19,12 @@ md-toolbar {
 md-sidenav {
   min-width: 200px !important;
   width: 85vw !important;
-  max-width: 400px !important;
+  max-width: 300px !important;
   position: relative;
   &.md-locked-open, &.md-closed.md-locked-open-add-active {
     min-width: 200px !important;
     width: 85vw !important;
-    max-width: 400px !important;
+    max-width: 300px !important;
     position: relative;
   }
 }
@@ -125,7 +125,6 @@ h3.table-title {
 
 .comparison-table {
   display: block;
-  width: 100%;
   padding: 10px;
   border-collapse: separate;
   thead tr {

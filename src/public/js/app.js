@@ -18,24 +18,11 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
   $scope.createIndex = createIndex;
   $scope.reference = appIndex.reference;
   $scope.uploadedFileContents = appIndex.docFiles;
-  $scope.search = appIndex.searchIndex;
+  $scope.search = searchIndex;
   $scope.currentDocs = [];
   $scope.autoComplete = autoComplete;
   
-  function autoComplete(string){
-    $scope.hidethis = false;
-    const output = [];
-    angular.forEach($scope.autocompleteOptions, (word) => {
-      if(word.toLowerCase().indexOf(string.toLowerCase()) >= 0){  
-        output.push(word);  
-      } 
-    });
-    $scope.filterWords = output; 
-    $scope.fillTextbox = function(string){  
-      $scope.word = string;  
-      $scope.hidethis = true;  
-    } 
-  };
+  
 
   // menu toggler
   function buildToggler(componentId) {
@@ -130,6 +117,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
           $scope.isLoading = false;
           document.getElementById('progress').style.display = 'none';
           document.getElementById('upload-done').style.display = 'block';
+          $scope.toggleLeft()
         }, 5000);
         
         for (file of files){
@@ -184,6 +172,31 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
       $scope.autocompleteOptions = appIndex.words;
     }, 100)
   }  
+
+  //search index function
+  function searchIndex(b){
+    let results = appIndex.searchIndex(b);
+    setTimeout(() => {
+      $scope.searchResults = results;
+      console.log($scope.searchResults, $scope.uploadedFileContents);
+    }, 100)
+  } 
+  
+  // autocomplete search input
+  function autoComplete(string){
+    $scope.hidethis = false;
+    const output = [];
+    angular.forEach($scope.autocompleteOptions, (word) => {
+      if(word.toLowerCase().indexOf(string.toLowerCase()) >= 0){  
+        output.push(word);  
+      } 
+    });
+    $scope.filterWords = output; 
+    $scope.fillTextbox = function(string){  
+      $scope.word = string;  
+      $scope.hidethis = true;  
+    } 
+  }
 }
 
 function themeMaterial($mdThemingProvider) {
