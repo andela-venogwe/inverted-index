@@ -89,3 +89,195 @@ md-input-container .md-input {
   margin-top: 30px;
 }
 
+.wrap {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.intro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 18px;
+  font-size: 1.8rem;
+  color: rgb(16,108,200);
+  text-align: center;
+  background: white;
+  -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+}
+
+h3.table-title {
+  color: #dddd;
+  font-weight: normal;
+  margin: 40px 0 0 10px;
+  font-size: 24px;
+  font-size: 2.2rem;
+  text-align: center;
+}
+
+.comparison-table {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border-collapse: separate;
+  thead tr {
+    color: rgb(16,108,200);
+    font-weight: bold;
+    font-size: 12px;
+    font-size: 1.1rem;
+    td {
+      padding-bottom: 10px;
+      border: none !important;
+    }
+  }
+  tr {
+    width: 100%;
+    td {
+      border-right: 2px solid rgb(16,108,200);
+    }
+    &:first-child td {
+      border-top: 2px solid rgb(16,108,200);
+    }
+    &:last-child td {
+      border-bottom: 2px solid rgb(16,108,200);
+    }
+    td {
+      &:first-child {
+        width: 25%;
+        padding: 10px;
+        color: rgb(16,108,200);
+        font-weight: bold;
+        border-left: 2px solid rgb(16,108,200);
+        + td {
+          width: 45%;
+          padding: 10px;
+        }
+      }
+      &.marker {
+        width: 10%;
+        text-align: center;
+        vertical-align: middle;
+        &[content="✔"] {
+          color: rgb(16,108,200);
+        }
+      }
+    }
+    &:nth-child(even) {
+      background: #ccf1fb;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .comparison-table thead tr {
+    font-size: 14px;
+    font-size: 1.4rem;
+    font-weight: normal;
+  }
+}
+
+@media (max-width: 525px) {
+  .comparison-table {
+    td {
+      position: relative;
+      display: block;
+      width: 100%;
+      border-top: none;
+      border-bottom: none;
+      border-left: 2px solid rgb(16,108,200);
+    }
+    tr {
+      td {
+        position: relative;
+        display: block;
+        width: 100%;
+        border-top: none;
+        border-bottom: none;
+        border-left: 2px solid rgb(16,108,200);
+        &.marker {
+          position: relative;
+          display: block;
+          width: 100%;
+          border-top: none;
+          border-bottom: none;
+          border-left: 2px solid rgb(16,108,200);
+        }
+        &:first-child {
+          position: relative;
+          display: block;
+          width: 100%;
+          border-top: none;
+          border-bottom: none;
+          border-left: 2px solid rgb(16,108,200);
+          + td {
+            position: relative;
+            display: block;
+            width: 100%;
+            border-top: none;
+            border-bottom: none;
+            border-left: 2px solid rgb(16,108,200);
+          }
+        }
+      }
+      &:first-child td {
+        &:first-child {
+          -moz-border-radius-topright: 5px;
+          -webkit-border-top-right-radius: 5px;
+          border-top-right-radius: 5px;
+        }
+        &:last-child {
+          -moz-border-radius-topright: 0;
+          -webkit-border-top-right-radius: 0;
+          border-top-right-radius: 0;
+        }
+      }
+      &:last-child td {
+        &:first-child {
+          -moz-border-radius-bottomleft: 0;
+          -webkit-border-bottom-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+        &:last-child {
+          -moz-border-radius-bottomleft: 5px;
+          -webkit-border-bottom-left-radius: 5px;
+          border-bottom-left-radius: 5px;
+          border-bottom: 2px solid rgb(16,108,200);
+        }
+      }
+      td {
+        &:first-child {
+          border-top: 2px solid rgb(16,108,200);
+          + td {
+            padding: 0 10px 10px;
+          }
+        }
+        &.marker {
+          padding: 10px;
+          font-weight: bold;
+          &:before {
+            content: "Package 1: ";
+          }
+          + td.marker {
+            &:before {
+              content: "Package 2: ";
+            }
+            + td.marker:before {
+              content: "Package 3: ";
+            }
+          }
+        }
+      }
+    }
+    thead tr td.marker {
+      display: none;
+    }
+  }
+}

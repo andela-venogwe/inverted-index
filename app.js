@@ -6,8 +6,6 @@ const bodyParser = require('body-parser');
 const sass = require('node-sass-middleware');
 const index = require('./routes/index');
 const uploads = require('./routes/uploads');
-const formidable = require('formidable');
-const fs = require('fs');
 
 const app = express();
 

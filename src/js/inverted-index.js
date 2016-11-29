@@ -1,6 +1,7 @@
-'use strict';
-
-/** remove array duplicates */
+/**
+* remove array duplicates.
+* @param arr - The array to be filtered.
+*/
 const unique = (arr) => {
   const checked = {}
   return arr.filter(function(x) {
@@ -12,7 +13,11 @@ const unique = (arr) => {
   });
 }
 
-/** json file reader */
+/**
+* JSON file reader.
+* @param url - The url of JSON file.
+* @param callback - the callback function.
+*/
 const getJSON = (url, callback) => {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -27,7 +32,10 @@ const getJSON = (url, callback) => {
   });
 }
 
-/** test if json file is valid */
+/**
+* test if json file is valid.
+* @param str - The JSON string.
+*/
 const isJSON = (str) => {
   const json = JSON.parse(str);
   if(isValidObject(json)){
@@ -58,12 +66,15 @@ const isValidObject = (collection) => {
 const saveTokens = (xhr) => {
   const docs = isJSON(xhr.responseText);
   const tokens = {};
+  let words = [];
   docs.forEach((document, index) => {
     let token = '';
     token += document.title + ' ' + document.text;
-    tokens[index] = unique(token.toLowerCase().match(/\w+/g).sort());
+    let uniqueTokens = unique(token.toLowerCase().match(/\w+/g).sort());
+    tokens[index] = uniqueTokens;
+    words = words.concat(uniqueTokens);
   });
-  return [tokens, docs];
+  return [tokens, docs, words];
 }
 
 /** format file name */
@@ -95,6 +106,13 @@ const populateReference = (tokenObj, parent, doc) => {
 const populateDocFiles = (tokenObj, parent, doc) => {
   parent.docFiles[doc] = tokenObj;
 }
+
+// filter text input
+const inputFIlter = (value) => {
+  return value.replace(/[^\w\s]/gi, '')
+  .split(' ')
+  .filter((item) => { return /\S/.test(item)});
+}
 /**
  * Class for creating an inverted index.
  * @extends Point
@@ -109,6 +127,8 @@ class InvertedIndex{
     this.reference = {},
     this.docFileNames = [];
     this.docFiles = {};
+    this.currentDocs = [];
+    this.words = [];
   }
   
   createIndex(file){
@@ -120,6 +140,9 @@ class InvertedIndex{
         const docName = formatFileName(file);
         populateDocFiles(savedTokens[1], this, docName);
         populateReference(savedTokens[0], this, docName);
+        this.currentDocs.push(docName);
+        this.words = unique(this.words.concat(savedTokens[2]));
+        return this.reference[docName];
       })
       .catch(function(err) {
         return err;
@@ -137,16 +160,10 @@ class InvertedIndex{
 
   searchIndex(value){
     //search index method
-    if(typeof value == 'string' || (typeof value == 'object' && Array.isArray(value))){
-      if(typeof value == 'string'){
-        //do string search
-      }
-      else{
-        // do array search
-      }
-    }
-    else{
-      return 'no match';
-    }
+    inputFIlter(value).forEach((word) => {
+      this.currentDocs.forEach((doc) => {
+        console.log(this.reference[doc][word]);
+      })
+    });
   }
 }

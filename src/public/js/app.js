@@ -15,11 +15,27 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
   $scope.fileSelect = jsonChoose;
   $scope.upload = uploadJson;
   $scope.menu = uploaded;
-  $scope.progress = 0;
-  $scope.getIndex = getIndex;
   $scope.createIndex = createIndex;
   $scope.reference = appIndex.reference;
   $scope.uploadedFileContents = appIndex.docFiles;
+  $scope.search = appIndex.searchIndex;
+  $scope.currentDocs = [];
+  $scope.autoComplete = autoComplete;
+  
+  function autoComplete(string){
+    $scope.hidethis = false;
+    const output = [];
+    angular.forEach($scope.autocompleteOptions, (word) => {
+      if(word.toLowerCase().indexOf(string.toLowerCase()) >= 0){  
+        output.push(word);  
+      } 
+    });
+    $scope.filterWords = output; 
+    $scope.fillTextbox = function(string){  
+      $scope.word = string;  
+      $scope.hidethis = true;  
+    } 
+  };
 
   // menu toggler
   function buildToggler(componentId) {
@@ -52,7 +68,6 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
     document.getElementById('upload').disabled = true;
     document.getElementById('upload-done').style.display = 'none';
     document.getElementById('upload-failed').style.display = 'none';
-    $scope.progress = 0;
     $mdDialog.hide();
   };
   
@@ -61,7 +76,6 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
     document.getElementById('upload-input').click();
     document.getElementById('upload-done').style.display = 'none';
     document.getElementById('upload-failed').style.display = 'none';
-    $scope.progress = 0;
   }
 
   //monitor input change
@@ -112,7 +126,12 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
       data: formData,
       enctype: 'multipart/form-data',
       success: function(data){
-        document.getElementById('upload-done').style.display = 'block';
+        setTimeout(() => {
+          $scope.isLoading = false;
+          document.getElementById('progress').style.display = 'none';
+          document.getElementById('upload-done').style.display = 'block';
+        }, 5000);
+        
         for (file of files){
           uploaded.push({
             title: file['name'],
@@ -120,7 +139,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
             getindex: 'GET INDEX',
             createindex: 'CREATE INDEX',
           });
-          fileNames.push(file.name);
+          //fileNames.push(file.name);
         }
         document.getElementById('upload-input').value = '';
         document.getElementById('selected-files').innerHTML = '';
@@ -128,18 +147,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
       xhr: function() {
         // create an XMLHttpRequest
         const xhr = new XMLHttpRequest();
-
-        // listen to the 'progress' event
-        xhr.upload.addEventListener('progress', function(evt) {
-
-          if (evt.lengthComputable) {
-            // calculate the percentage of upload completed
-            // update the Materail progress bar with the new percentage
-            $scope.progress = parseInt(evt.loaded / evt.total);
-          }
-
-        }, false);
-
+        $scope.isLoading = true;
         return xhr;
       }
     });
@@ -164,44 +172,19 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
   // show create index message
   $scope.showCreateIndexMessage = showMessage;
 
-  //get index function
-  function getIndex(a){
-    new Promise((resolve, reject) => {
-      resolve(appIndex.getIndex(a))
-    })
-    .then(() => {
-      document.getElementById(b + 'Get').disabled = true;
-    })
-    .catch(function(err) {
-      return err;
-    });
-  }
-
   //create index function
   function createIndex(b){
-    new Promise((resolve, reject) => {
-      resolve(appIndex.createIndex(b))
-    })
-    .then(() => {
-      document.getElementById(b + 'Create').visibility = 'hidden';
-    })
-    .catch(function(err) {
-      return err;
-    });
-    console.log(appIndex.reference);
-    console.log(appIndex.docFiles);
-    console.log(appIndex.docFileNames);
-  }
-
-  // populate view
-  function populateView(){
-    
-  }
-  
-  
+    const docName = formatFileName(b);
+    appIndex.createIndex(b);
+    setTimeout(() => {
+      $scope.title = docName;
+      $scope.headers = Object.keys(appIndex.docFiles[docName]);
+      $scope.words = appIndex.reference[docName];
+      $scope.currentDocs.push(docName);
+      $scope.autocompleteOptions = appIndex.words;
+    }, 100)
+  }  
 }
-
-
 
 function themeMaterial($mdThemingProvider) {
   var customBlueMap =     $mdThemingProvider.extendPalette('light-blue', {
@@ -220,6 +203,5 @@ function themeMaterial($mdThemingProvider) {
   $mdThemingProvider.theme('input', 'default')
         .primaryPalette('grey')
 }
-
 
 app.config(themeMaterial);
