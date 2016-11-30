@@ -22,7 +22,7 @@ block content
     md-toolbar(ng-show='!showSearch')
       .md-toolbar-tools
         h1
-          | Inverted Index
+          | Inverted Index Generator
         span(flex)
         md-button#tab2(aria-label='Search', ng-click='showSearch = !showSearch; data.selectedIndex = 1')
           ng-md-icon(icon='search')
@@ -55,7 +55,7 @@ block content
         .inset(hide-sm='')
         ng-switch.tabpanel-container(on='data.selectedIndex')
           #tab1-content(role='tabpanel', aria-labelledby='tab1', ng-switch-when='0', md-swipe-left='next()', md-swipe-right='previous()', layout='row', layout-align='center center')
-            md-card(flex-gt-sm='90', flex-gt-md='80')(ng-if="title")
+            md-card(flex-gt-sm='90', flex-gt-md='80', ng-if="title")
               md-card-content
                 .wrap#data
                   h2(style='text-align: center; text-transform: Capitalize') Index:  {{title}}
@@ -112,4 +112,3 @@ block content
           span(flex)
           md-button#upload.md-primary(md-no-ink, ng-click="upload(); data.selectedIndex = 0", style="margin-right:20px;")
             | UPLOAD JSON FILE(S)
-

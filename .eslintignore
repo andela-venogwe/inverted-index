@@ -1,0 +1,5 @@
+src/jasmine/lib
+src/jasmine/spec
+!jasmine/spec/inverted-index-test.js
+public
+!public/js/app.js

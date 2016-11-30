@@ -1,7 +1,7 @@
 let arr = null;
 const index = new InvertedIndex();
 
-describe("Read book data", (done) => {
+describe('Read book data', (done) => {
   beforeEach(function(done) {
     getJSON('src/jasmine/books.json', saveTokens)
       .then((savedTokens) => {

@@ -1,6 +1,10 @@
 $gray: #eee;
 $pink: #ff078;
+$font: Montserrat;
 
+body,html,p,h1,h2,h3,h4,h5,h6,p{
+  font-family: $font !important;
+}
 md-content.md-default-theme {
   background-color: $gray;
 }

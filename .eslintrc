@@ -33,5 +33,7 @@
             "ClassDeclaration": true
         }
     }],
+    "arrow-body-style": ["error", "always"],
+    "multiline-ternary": ["error", "always"],
   }
 }

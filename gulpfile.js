@@ -2,7 +2,7 @@
 
 const babel = require('gulp-babel');
 
-// const browserify = require('browserify');
+const browserify = require('browserify');
 
 const browserSync = require('browser-sync');
 
@@ -10,17 +10,17 @@ const browserSyncJasmine = browserSync.create('jasmine');
 
 const browserSyncNode = browserSync.create('nodemon');
 
-// const coveralls = require('gulp-coveralls');
+const coveralls = require('gulp-coveralls');
 
 const eslint = require('gulp-eslint');
 
 const gulp = require('gulp');
 
-// const istanbul = require('gulp-istanbul');
+const istanbul = require('gulp-istanbul');
 
-// const jasmine = require('gulp-jasmine');
+const jasmine = require('gulp-jasmine');
 
-// const cover = require('gulp-coverage');
+const cover = require('gulp-coverage');
 
 const nodemon = require('gulp-nodemon');
 
@@ -29,8 +29,6 @@ const os = require('os');
 const plumber = require('gulp-plumber');
 
 const nodejsPort = Math.floor((Math.random() * 1000) + 3000);
-
-// const jasminePort = Math.floor((Math.random() * (5999 - 5000 + 1)) + 5000);
 
 const browser = os.platform() === 'linux' ? 'google-chrome' : (
   os.platform() === 'darwin' ? 'google chrome' : (
@@ -44,7 +42,7 @@ const BROWSER_SYNC_RELOAD_DELAY = 2000;
 //gulp jshint code testing
 // lint covearge ['*.js', './src/js/*.js', './src/jasmine/spec/*.js', './src/public/js/*.js']
 gulp.task('lint', () => {
-  return gulp.src(['./src/js/*.js', './src/jasmine/spec/*.js',])
+  return gulp.src(['./src/js/*.js'])
     .pipe(eslint()) 
     .pipe(eslint.format());
 });
