@@ -40,7 +40,6 @@ app.use(express.static(path.join(__dirname, 'src/public')));
 
 app.use('/', index);
 
-app.use('/', uploads);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
