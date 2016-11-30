@@ -1,0 +1,4 @@
+src/jasmine/lib
+src/jasmine/spec
+!js/src/inverted-index.js
+public
