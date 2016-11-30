@@ -222,7 +222,6 @@ class InvertedIndex {
             this.searchReturn[doc][word] = this.reference[doc][word]);
         });
       });
-      console.log(this.searchReturn);
       return this.searchReturn;
     }
   }

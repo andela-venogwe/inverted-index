@@ -235,7 +235,6 @@ var InvertedIndex = function () {
             _typeof(_this2.searchReturn[doc]) === 'object' && !Array.isArray(_this2.searchReturn[doc]) ? _this2.searchReturn[doc][word] = _this2.reference[doc][word] : (_this2.searchReturn[doc] = {}, _this2.searchReturn[doc][word] = _this2.reference[doc][word]);
           });
         });
-        console.log(this.searchReturn);
         return this.searchReturn;
       }
     }
