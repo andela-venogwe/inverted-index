@@ -1,8 +1,9 @@
 scss:
   enabled: true
 
-jshint:
-  config_file: .jshintrc
-  ignore_file: .javascript_ignore
+eslint:
+  enabled: true
+  config_file: .eslintrc
+  ignore_file: .eslintignore
 
 fail_on_violations: true
