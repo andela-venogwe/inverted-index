@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-unused-vars */
 /**
 * remove array duplicates.
 * @param {array} arr - The array to be filtered.
@@ -22,6 +24,7 @@ const unique = (arr) => {
 */
 const getJSON = (url, callback) => {
   return new Promise((resolve, reject) => {
+    /* global XMLHttpRequest */
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.send();
@@ -219,6 +222,7 @@ class InvertedIndex {
             this.searchReturn[doc][word] = this.reference[doc][word]);
         });
       });
+      console.log(this.searchReturn);
       return this.searchReturn;
     }
   }

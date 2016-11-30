@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-unused-vars */
 let arr = null;
 const index = new InvertedIndex();
 
 describe('Read book data', (done) => {
-  beforeEach(function(done) {
+  beforeEach((done) => {
     getJSON('src/jasmine/books.json', saveTokens)
       .then((savedTokens) => {
         arr = savedTokens[1];
@@ -157,3 +159,4 @@ describe('Search Index', () => {
   //   });
   // });
 });
+

@@ -10,6 +10,7 @@
     "one-var": 0,
     "one-var-declaration-per-line": 0,
     "new-cap": 0,
+    "semi": 2,
     "consistent-return": 0,
     "no-param-reassign": 0,
     "comma-dangle": 0,
@@ -33,6 +34,7 @@
             "ClassDeclaration": true
         }
     }],
+    "no-unused-vars": [1, {"vars": "local", "args": "none"}],
     "arrow-body-style": ["error", "always"],
     "multiline-ternary": ["error", "always"],
   }

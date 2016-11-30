@@ -6,6 +6,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-unused-vars */
 /**
 * remove array duplicates.
 * @param {array} arr - The array to be filtered.
@@ -30,6 +32,7 @@ var unique = function unique(arr) {
 */
 var getJSON = function getJSON(url, callback) {
   return new Promise(function (resolve, reject) {
+    /* global XMLHttpRequest */
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.send();
@@ -232,6 +235,7 @@ var InvertedIndex = function () {
             _typeof(_this2.searchReturn[doc]) === 'object' && !Array.isArray(_this2.searchReturn[doc]) ? _this2.searchReturn[doc][word] = _this2.reference[doc][word] : (_this2.searchReturn[doc] = {}, _this2.searchReturn[doc][word] = _this2.reference[doc][word]);
           });
         });
+        console.log(this.searchReturn);
         return this.searchReturn;
       }
     }

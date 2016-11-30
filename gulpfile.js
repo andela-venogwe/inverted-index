@@ -42,7 +42,7 @@ const BROWSER_SYNC_RELOAD_DELAY = 2000;
 //gulp jshint code testing
 // lint covearge ['*.js', './src/js/*.js', './src/jasmine/spec/*.js', './src/public/js/*.js']
 gulp.task('lint', () => {
-  return gulp.src(['./src/js/*.js'])
+  return gulp.src(['./src/js/*.js', './src/jasmine/spec/*js'])
     .pipe(eslint()) 
     .pipe(eslint.format());
 });
