@@ -1,156 +1,148 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-unused-vars */
-let arr = null;
+const InvertedIndex = require('../../js/Inverted-index.js');
+
 const index = new InvertedIndex();
 
-describe('Read book data', (done) => {
-  beforeEach((done) => {
-    getJSON('src/jasmine/books.json', saveTokens)
-      .then((savedTokens) => {
-        arr = savedTokens[1];
-    });
-    index.createIndex('src/jasmine/books.json');
-    index.createIndex('src/jasmine/tests.json');
-    setTimeout(function() {
-      done();
-    }, 1000);
+const Utils = require('../../js/Utils.js');
+
+const books = require('../books.json');
+
+describe('Read book data', () => {
+  it('Should return a valid JSON array', () => {
+    expect(Array.isArray(books)).toBe(true);
+    
   });
-  it('Should return a valid JSON array', (done) => {
-    expect(Array.isArray(arr)).toBe(true);
-    done();
+  it('Should return a non empty JSON array', () => {
+    expect(books.length > 1).toBe(true);
+    
   });
-  it('Should return a non empty JSON array', (done) => {
-    expect(arr.length > 1).toBe(true);
-    done();
-  });
-  it('Should remove duplicates from array', (done) => {
+  it('Should remove duplicates from array', () => {
     const duplicate = ['a', 'b', 'c', 'd', 'e', 'a', 'b', 'c', 'd', 'e'];
-    expect(unique(duplicate)).toEqual(['a', 'b', 'c', 'd', 'e']);
-    done();
+    expect(Utils.unique(duplicate)).toEqual(['a', 'b', 'c', 'd', 'e']);
+    
   });
-  it('Should return a JSON array which contains objects only', (done) => {
-    let ans = true;
+  it('Should return a JSON array which contains objects only', () => {
+    let answer = true;
     let count = 0;
-    while(count < arr.length){
-      if(typeof arr[count] != 'object' || Array.isArray(arr[count])){
-        ans = false;
+    while(count < books.length){
+      if(typeof books[count] != 'object' || Array.isArray(books[count])){
+        answer = false;
       }
       count += 1;
     }
-    expect(ans).toBe(true);
-    done();
+    expect(answer).toBe(true);
+    
   });
-  it('Should return a JSON array which has keys (title and text)', (done) => {
-    let ans = true;
+  it('Should return a JSON array which has keys (title and text)', () => {
+    let answer = true;
     let count = 0;
-    while(count < arr.length){
-      if(arr[count].title === undefined || arr[count].text === undefined){
-        ans = false;
+    while(count < books.length && answer){
+      if(books[count].title === undefined || books[count].text === undefined){
+        answer = false;
       }
       count += 1;
     }
-    expect(ans).toBe(true);
-    done();
+    expect(answer).toBe(true);
+    
   });
-  it('Should return a JSON array which has valid string entries for keys(title, text)', (done) => {
-    let ans = true;
-    let count = 0;
-    while(count < arr.length){
-      if(typeof arr[count].title != 'string' || typeof arr[count].text != 'string'){
-        ans = false;
-      }
-      count += 1;
-    }
-    expect(ans).toBe(true);
-    done();
-  });
-  it('Should return the correct filename of the uploaded file', (done) => {
-    let ans = formatFileName('src/jasmine/books.json');
-    expect(ans).toEqual('books.json');
-    done();
-  });
+  // it('Should return a JSON array which has valid string entries for keys(title, text)', () => {
+  //   let answer = true;
+  //   let count = 0;
+  //   while(count < books.length){
+  //     if(typeof books[count].title != 'string' || typeof books[count].text != 'string'){
+  //       answer = false;
+  //     }
+  //     count += 1;
+  //   }
+  //   expect(answer).toBe(true);
+    
+  // });
+  // it('Should return the correct filename of the uploaded file', () => {
+  //   let answer = Utils.formatFileName('src/jasmine/books.json');
+  //   expect(answer).toEqual('books.json');
+    
+  // });
 }); 
 
-describe('Populate Index', () => {
-  describe('On file upload', () => {
-    it('Should create the index once the JSON file has been read', (done) => {
-      expect(typeof index.reference['books.json']).toEqual('object');
-      done();
-    });
+// describe('Populate Index', () => {
+//   describe('On file upload', () => {
+//     it('Should create the index once the JSON file has been read', () => {
+//       expect(typeof index.reference['books.json']).toEqual('object');
+      
+//     });
 
-    it('Should create an accurate index object', (done) => {
-      expect(index.getIndex('books.json').alice[0]).toEqual(0);
-      expect(index.getIndex('books.json').lord[0]).toEqual(1);
-      expect(index.getIndex('books.json').a[1]).toEqual(1);
-      done();
-    });
-    it('Should create an inverted index', (done) => {
-      let verdict = true;
-      const indexContent = index.reference['books.json'];
+//     it('Should create an accurate index object', () => {
+//       expect(index.getIndex('books.json').alice[0]).toEqual(0);
+//       expect(index.getIndex('books.json').lord[0]).toEqual(1);
+//       expect(index.getIndex('books.json').a[1]).toEqual(1);
+      
+//     });
+//     it('Should create an inverted index', () => {
+//       let verdict = true;
+//       const indexContent = index.reference['books.json'];
 
-      for (value in indexContent) {
-        if (!Array.isArray(indexContent[value]) || isNaN(indexContent[value][0])) {
-          verdict = false;
-        }
-      }
-      expect(verdict).toEqual(true);
-      done();
-    });
-    it('Should not overwrite the previously created index', (done) => {
-      const indexBefore = index.reference['books.json']
-      const indexAfter = index.reference['tests.json']
-      expect(typeof indexBefore == 'object' && typeof indexAfter == 'object').toBe(true);
-      done();
-    });
-  });
-});
+//       for (value in indexContent) {
+//         if (!Array.isArray(indexContent[value]) || isNaN(indexContent[value][0])) {
+//           verdict = false;
+//         }
+//       }
+//       expect(verdict).toEqual(true);
+      
+//     });
+//     it('Should not overwrite the previously created index', () => {
+//       const indexBefore = index.reference['books.json'];
+//       const indexAfter = index.reference['tests.json'];
+//       expect(typeof indexBefore == 'object' && typeof indexAfter == 'object').toBe(true);
+      
+//     });
+//   });
+// });
 
-describe('Search Index', () => {
-  describe('Search results', () => {
-    it('Should return the correct result for single word searches', (done) => {
-      expect(typeof index.searchIndex('Lord')).toEqual('object');
-      done();
-    });
-    it('Should filter alphanumeric search queries', (done) => {
-      expect(index.searchIndex('ade **')).toEqual(10);
-      done();
-    });
+// describe('Search Index', () => {
+//   describe('Search results', () => {
+//     it('Should return the correct result for single word searches', () => {
+//       expect(typeof index.searchIndex('Lord')).toEqual('object');
+      
+//     });
+//     it('Should filter alphanumeric search queries', () => {
+//       expect(index.searchIndex('ade **')).toEqual(10);
+      
+//     });
 
-    it('Should return correct search results for multiple word queries', (done) => {
-      expect(index.searchIndex('Lord of the rings')).toEqual(0);
-      done();
-    });
-  });
+//     it('Should return correct search results for multiple word queries', () => {
+//       expect(index.searchIndex('Lord of the rings')).toEqual(0);
+      
+//     });
+//   });
 
-  // it(' - The search should not take too long to execute', (done) => {
+  // it(' - The search should not take too long to execute', () => {
   //   const startTime = performance.now();
   //   index.searchIndex(['valid1.json'], index.createResultHtml, 'alice');
   //   const endTime = performance.now();
   //   expect(endTime - startTime < 5000).toBeTruthy();
-  //   done();
+  //   
   // });
 
-  // it('should accept a varied number of argument', (done) => {
+  // it('should accept a varied number of argument', () => {
   //   let result = index.searchIndex(['valid1.json'], index.createResultHtml, 'alice in', 'lord town');
   //   expect(typeof result[0]).toEqual('object');
   //   result = index.searchIndex(['valid1.json'], index.createResultHtml, 'alice in', ['lord', 'town']);
   //   expect(typeof result[0]).toEqual('object');
   //   result = index.searchIndex(['valid1.json'], index.createResultHtml, 'alice', 'in');
   //   expect(result[0]).toEqual({ alice: { 'valid1.json': [0] }, in : { 'valid1.json': [0] } });
-  //   done();
+  //   
   // });
 
-  // it('It should accept an array of argument', (done) => {
+  // it('It should accept an array of argument', () => {
   //   const result = index.searchIndex(['valid1.json'], index.createResultHtml, ['alice', 'in']);
   //   expect(result[0]).toEqual({ alice: { 'valid1.json': [0] }, in : { 'valid1.json': [0] } });
-  //   done();
+  //   
   // });
 
 
-  // it('It should accept mix of array and words as argument', (done) => {
+  // it('It should accept mix of array and words as argument', () => {
   //   result = index.searchIndex(['valid1.json'], index.createResultHtml, 'alice in', ['lord', 'town']);
   //   expect(typeof result[0]).toEqual('object');
-  //   done();
+  //   
   // });
 
   // describe('Get Index', () => {
@@ -158,5 +150,5 @@ describe('Search Index', () => {
   //     expect(typeof index.getIndex('valid1.json')).toEqual('object');
   //   });
   // });
-});
+// });
 
