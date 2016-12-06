@@ -13,10 +13,12 @@ block content
             .inset
               | {{item.title}}
             .inset
-              md-button.md-raised.md-primary(id="{{item.title}}Create", ng-click="createIndex('uploads/' + item.title); showGetIndexMessage('create'); data.selectedIndex = 0")
+              md-button.md-raised.md-primary(id="{{item.title}}Create", ng-click="createIndex('uploads/' + item.title); showGetIndexMessage('create'); data.selectedIndex = 0; changeStateAgain();")
                | {{item.createindex}}
             p {{item.error || item.success}}
   div(layout="column", layout-fill, role="main").relative
+    md-button.md-fab.md-fab-bottom-right(aria-label='Upload', ng-click='changeState()', style="margin-right: 90px;")
+      ng-md-icon(icon='help')
     md-button.md-fab.md-fab-bottom-right(aria-label='Upload', ng-click='showUploadBox($event)')
       ng-md-icon(icon='file_upload')
     md-toolbar(ng-show='!showSearch')
@@ -42,7 +44,7 @@ block content
           | Back
         md-input-container(md-theme='input', flex="90")
           label  
-          input(ng-model='word', ng-keyup="autoComplete(word)", placeholder='search indexes', required)
+          input(ng-model='word', ng-enter="search(word, selected); data.selectedIndex = 1", placeholder='search indexes', required)
         md-input-container(md-theme-input, flex="10")
           md-select(ng-model='selected', multiple, required)
             md-select-header
@@ -61,7 +63,7 @@ block content
         .inset(hide-sm='')
         ng-switch.tabpanel-container(on='data.selectedIndex')
           #tab1-content(role='tabpanel', aria-labelledby='tab1', ng-switch-when='0', md-swipe-left='next()', md-swipe-right='previous()', layout='row', layout-align='center center')
-            md-card(ng-if="dialogUnOpened")
+            md-card(ng-show="state")
               iframe(width='100%', height='200', src='https://www.youtube.com/embed/zG43udqng1M', frameborder='0', allowfullscreen='')
               md-card-title
                 md-card-title-text
@@ -78,7 +80,7 @@ block content
                   li To search index, click on the search icon at the topmost-right corner of your screen
                   li Enter a search term and select files to search
                   li Click on the search button to search indexes.
-            md-card(flex, ng-if="title")
+            md-card(flex, ng-if="title", ng-show='!state')
               md-card-content
                 .wrap#data
                   h2(style='text-align: center; text-transform: Capitalize') Index:  {{title}}
