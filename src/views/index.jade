@@ -1,5 +1,137 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  md-sidenav.md-sidenav-left.md-whiteframe-z2(layout='column', md-component-id='left',  md-disable-backdrop, md-whiteframe='4')
+    md-toolbar.md-hue-2
+      h1.md-toolbar-tools All Uploaded Files
+    md-list
+      md-item(ng-repeat='item in menu')
+        a
+          md-item-content(md-ink-ripple='', layout='row', layout-align='start center')
+            .inset
+              ng-md-icon(icon='{{item.icon}}')
+            .inset
+              | {{item.title}}
+            .inset
+              md-button.md-raised.md-primary(id="{{item.title}}Create", ng-click="createIndex('uploads/' + item.title); showGetIndexMessage('create'); data.selectedIndex = 0")
+               | {{item.createindex}}
+            p {{item.error || item.success}}
+  div(layout="column", layout-fill, role="main").relative
+    md-button.md-fab.md-fab-bottom-right(aria-label='Upload', ng-click='showUploadBox($event)')
+      ng-md-icon(icon='file_upload')
+    md-toolbar(ng-show='!showSearch')
+      .md-toolbar-tools
+        h1
+          | Inverted Index Generator
+        span(flex)
+        md-button#tab2(aria-label='Search', ng-click='showSearch = !showSearch; data.selectedIndex = 1')
+          ng-md-icon(icon='search')
+        md-button(aria-label='Open Sidebar', ng-click='toggleLeft()')
+          ng-md-icon(icon='more_vert')
+      md-tabs.md-primary(md-stretch-tabs, md-selected='data.selectedIndex', md-center-tabs="true")
+        md-tab#tab1(aria-controls='tab1-content')
+          | Index
+        md-tab#tab2(aria-controls="tab2-content")
+          | Search Results
+    md-toolbar.md-hue-1(ng-show='showSearch')
+      .md-toolbar-tools
+        md-button(ng-click='showSearch = !showSearch', aria-label='Back')
+          ng-md-icon(icon='arrow_back')
+        h3(flex='10')
+          | Back
+        md-input-container(md-theme='input', flex="90")
+          label  
+          input(ng-model='word', ng-keyup="autoComplete(word)", placeholder='search indexes', required)
+        md-input-container(md-theme-input, flex="10")
+          md-select(ng-model='selected', multiple, required)
+            md-select-header
+              label Files
+              md-option(ng-repeat="doc in currentDocuments track by $index",value='{{doc}}') {{doc}}
+        md-button(aria-label='Search', ng-click='search(word, selected); data.selectedIndex = 1')
+          ng-md-icon(icon='search')
+        md-button(aria-label='Open Settings', ng-click='toggleLeft()')
+          ng-md-icon(icon='more_vert')
+    md-content(flex, md-scroll-y)
+      md-list(ng-model='hidethis', ng-hide='hidethis', flex)
+            md-list-item(ng-repeat='item in filterWords', ng-click='fillTextbox(item)') 
+              p {{item}}
+            md-divider
+      ui-view(layout='column', layout-fill='', layout-padding='')
+        .inset(hide-sm='')
+        ng-switch.tabpanel-container(on='data.selectedIndex')
+          #tab1-content(role='tabpanel', aria-labelledby='tab1', ng-switch-when='0', md-swipe-left='next()', md-swipe-right='previous()', layout='row', layout-align='center center')
+            md-card(ng-if="dialogUnOpened")
+              iframe(width='100%', height='200', src='https://www.youtube.com/embed/zG43udqng1M', frameborder='0', allowfullscreen='')
+              md-card-title
+                md-card-title-text
+                  span.md-headline Welcome to the Inverted Index Application!
+              md-card-content
+                h3 To use this app, take the following steps:
+                ul
+                  li Click on the upload button at the bottom right of your screen
+                  li Click the select file button in the popup that shows, to choose your json file
+                  li Make sure you choose a valid json file to enable the upload buttom
+                  li Click on upoad to upload your json files
+                  li After upload completes click on create index for respective json file to generate an index table
+                  li To regenerate an index table for any json file click on the create index button with file name
+                  li To search index, click on the search icon at the topmost-right corner of your screen
+                  li Enter a search term and select files to search
+                  li Click on the search button to search indexes.
+            md-card(flex, ng-if="title")
+              md-card-content
+                .wrap#data
+                  h2(style='text-align: center; text-transform: Capitalize') Index:  {{title}}
+                  md-divider
+                  table.comparison-table
+                    thead
+                      tr
+                        td.marker Words
+                        td.marker(ng-repeat="item in headers") Document_{{item}}
+                    tr(ng-repeat="(key, value) in words")
+                      td.marker {{key}}
+                      td.marker(ng-repeat="item in headers")
+                        span(ng-repeat="index in value")
+                          span(ng-show="item == index", style="color: #3004e0; font-weight: bold") ✔
+          #tab2-content(role='tabpanel', aria-labelledby='tab2', ng-switch-when='1', md-swipe-left='next()', md-swipe-right='previous()', layout='row', layout-align='center center')
+            md-card(flex)
+              md-card-content
+                h2(style='text-align: center; text-transform: Capitalize') Search Results
+                md-divider
+                .wrap#search(ng-repeat="(k, v) in searchResults")
+                  h3(style="margin-left: 15px;text-transform: uppercase") {{k}}
+                  table.comparison-table
+                    thead
+                      tr
+                        td.marker Words
+                        td.marker(ng-repeat="(t, item) in uploadedFileContents[k]") Document_{{t}}
+                      tr(ng-repeat="(key, value) in v")
+                        td.marker {{key}}
+                        td.marker(ng-repeat="(t, item) in uploadedFileContents[k]")
+                          span(ng-repeat="index in v[key]", ng-if="t == index") ✔
+                  md-divider(hide-gt-sm ng-if="!$last")
+  div(style='visibility: hidden')
+    #myDialog.md-dialog-container
+      md-dialog(aria-label="Upload Form")
+        md-toolbar
+          .md-toolbar-tools
+            h2 JSON FILE UPLOADER
+            span(flex="")
+            md-button.md-icon-button(ng-click="closeDialog()")
+              ng-md-icon(icon="close", aria-label="Close dialog")
+        md-dialog-content(style="max-width:800px;max-height:810px; ")
+          md-content.md-padding(layout="column")
+            p(style="text-align: center")
+              md-button.md-raised.md-primary(style="width:200px", ng-click="select()") 
+                | SELECT FILES 
+            p#upload-done(style="display: none; color: green; text-align: center") upload complete
+            p#upload-failed(style="display: none; color: red; text-align: center") upload failed. file exists already or invalid file.
+            p#cheating(style="display: none; text-align: center; color: #3004e0") why do you want to cheat?
+            md-list#selected-files
+            input#upload-input.ng-hide(type="file", ,="", accept=".json", name="uploads[]", multiple="multiple" onchange="angular.element(this).scope().fileSelect()", ngf-pattern='application/json')
+            md-progress-linear#progress(ng-show="isLoading", md-mode="indeterminate")
+        md-dialog-actions(layout="row")
+          md-button(ng-click="closeDialog()")
+            | CLOSE THIS
+          span(flex)
+          md-button#upload.md-primary(md-no-ink, ng-click="upload(); data.selectedIndex = 0", style="margin-right:20px;", ng-disabled="!canUpload")
+            | UPLOAD JSON FILE(S)

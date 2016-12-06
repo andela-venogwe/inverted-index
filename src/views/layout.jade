@@ -1,15 +1,16 @@
 doctype html
-html
+html(lang="en" data-ng-app="Index")
   head
     title= title
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat:400,700')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.1/angular-material.min.css')
-    link(rel='stylesheet', href='/stylesheets/app.css')
-  body
+    link(rel='stylesheet', href='/css/app.css')
+  body#app(layout="row" ng-controller="InvertedIndexController", ng-cloak)
     block content
-    script(src='https://code.jquery.com/jquery-1.12.4.min.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js')
+    script(src='https://code.jquery.com/jquery-2.2.0.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.6/angular.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.1/angular-material.min.js')
-    script(src='/js/front.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-animate.min.js')
-    script('https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-aria.min.js')
-
+    script(src='/js/build.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.6/angular-animate.min.js')
+    script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-aria.min.js")
+    script(src='https://cdn.jsdelivr.net/angular-material-icons/0.4.0/angular-material-icons.min.js')
