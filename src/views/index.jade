@@ -21,8 +21,9 @@ block content
       ng-md-icon(icon='file_upload')
     md-toolbar(ng-show='!showSearch')
       .md-toolbar-tools
-        h1
-          | Inverted Index Generator
+        a(href="/")
+          h1
+            | Inverted Index Generator
         span(flex)
         md-button#tab2(aria-label='Search', ng-click='showSearch = !showSearch; data.selectedIndex = 1')
           ng-md-icon(icon='search')
