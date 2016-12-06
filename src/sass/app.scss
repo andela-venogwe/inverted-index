@@ -21,14 +21,14 @@ md-toolbar {
 }
 
 md-sidenav {
-  min-width: 200px !important;
+  min-width: 350px !important;
   width: 85vw !important;
-  max-width: 300px !important;
+  max-width: 350px !important;
   position: relative;
   &.md-locked-open, &.md-closed.md-locked-open-add-active {
-    min-width: 200px !important;
+    min-width: 350px !important;
     width: 85vw !important;
-    max-width: 300px !important;
+    max-width: 350px !important;
     position: relative;
   }
 }
@@ -90,7 +90,7 @@ md-sidenav {
 
 md-input-container .md-input {
   margin-left: 20px;
-  margin-top: 30px;
+  margin-top: 15px;
 }
 
 .wrap {
@@ -125,6 +125,18 @@ h3.table-title {
   font-size: 24px;
   font-size: 2.2rem;
   text-align: center;
+}
+
+.message{
+  float: right;
+}
+
+.bad{
+  color: #cc0000;
+}
+
+.good{
+  color: green;
 }
 
 .comparison-table {

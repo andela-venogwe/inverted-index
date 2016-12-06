@@ -1,8 +1,16 @@
 'use strict';
 
-const babel = require('gulp-babel');
-
 const browserify = require('browserify');
+
+const sourcemaps = require('gulp-sourcemaps');
+
+const source = require('vinyl-source-stream');
+
+const buffer = require('vinyl-buffer');
+
+const watchify = require('watchify');
+
+const babel = require('babelify');
 
 const browserSync = require('browser-sync');
 
@@ -40,29 +48,25 @@ const browser = os.platform() === 'linux' ? 'google-chrome' : (
 const BROWSER_SYNC_RELOAD_DELAY = 2000;
 
 //gulp jshint code testing
-// lint covearge ['*.js', './src/js/*.js', './src/jasmine/spec/*.js', './src/public/js/*.js']
 gulp.task('lint', () => {
-  return gulp.src(['./src/js/*.js', './src/jasmine/spec/*js'])
-    .pipe(eslint()) 
+  return gulp.src(['./src/js/Inverted-index.js', './src/js/Utils.js', './src/js/app.js'])
+    .pipe(eslint())
     .pipe(eslint.format());
 });
 
-gulp.task('istanbul', function () {
-  // return gulp.src(['src/public/js/app.js'])
-  //   .pipe(istanbul({includeUntested: true}))
-  //   .pipe(istanbul.hookRequire());
-});
 
-gulp.task('jasmine', ['istanbul'], function () {
-  // return gulp.src('src/jasmine/spec/inverted-index-test_spec.js')
-  //   .pipe(jasmine())
-  //   .pipe(istanbul.writeReports({
-  //     reporters: [ 'lcov' ],
-  //   }))
-  //   .on('end', function(){
-  //     gulp.src('/coverage/lcov.info')
-  //     .pipe(coveralls());
-  //   })
+gulp.task('jasmine', () => {
+  return gulp.src('src/jasmine/js/spec.js')
+    .pipe(jasmine())
+    .pipe(istanbul())
+    .pipe(istanbul.hookRequire())
+    .pipe(istanbul.writeReports({
+      reporters: [ 'lcov' ],
+    }))
+    .on('end', function(){
+      gulp.src('/coverage/lcov.info')
+      .pipe(coveralls());
+    })
 });
 
 // run the nodemon server reload
@@ -96,7 +100,7 @@ gulp.task('nodemon', (cb) => {
 });
 
 // run browsersync after nodemon runs
-gulp.task('browser-sync', ['scripts'], () => {
+gulp.task('browser-sync', ['watch'], () => {
   browserSyncNode.init(null, {
     online: false,
     proxy: 'http://localhost:' + nodejsPort,
@@ -109,7 +113,7 @@ gulp.task('browser-sync', ['scripts'], () => {
 });
 
 // run browsersync for jasmine tests
-gulp.task('browser-sync-jasmine', () => {
+gulp.task('browser-sync-jasmine', ['watchSpec'], () => {
   browserSyncJasmine.init(null, {
     online: false,
     browser: browser,
@@ -135,24 +139,77 @@ gulp.task('css', () => {
     .pipe(browserSyncNode.reload({ stream: true }));
 });
 
-// convert es5 to es6
-gulp.task('scripts', ['lint'], () => {
-  return gulp.src('src/js/*.js')
-  .pipe(plumber({
-    errorHandler: () => {
-      this.emit('end');
-    }
-  }))
-  .pipe(babel({
-    presets: ['es2015']
-  }))
-  .pipe(gulp.dest('src/public/js/'))
-  .pipe(browserSyncNode.reload({ stream: true }));
-});
+function compile(watch) {
+  const bundler = watchify(browserify('./src/js/app.js', { debug: false }).transform(babel, {presets: ["es2015"]}));
+  function rebundle() {
+  return bundler
+    .bundle()
+    .on('error', function (err) {
+        console.error(err);
+        this.emit('end');
+    })
+    .pipe(source('build.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest('./src/public/js/'));
+  }
+
+  if (watch) {
+  bundler.on('update', function () {
+    console.log('-> bundling...');
+    rebundle();
+  });
+  rebundle()
+  } else {
+  rebundle().pipe(exit());
+  }
+}
+
+function watch() {
+  return compile(true);
+}
+
+gulp.task('build', function() { return compile(); });
+gulp.task('watch', function() { return watch(); });
+
+// second babelify
+function compileAgain(watching) {
+  const bundler = watchify(browserify('./src/jasmine/spec/inverted-index-test.js', { debug: false }).transform(babel, {presets: ["es2015"]}));
+  function rebundle() {
+  return bundler
+    .bundle()
+    .on('error', function (err) {
+        console.error(err);
+        this.emit('end');
+    })
+    .pipe(source('spec.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest('./src/jasmine/js/'));
+  }
+
+  if (watching) {
+  bundler.on('update', function () {
+    console.log('-> bundling specs...');
+    rebundle();
+  });
+  rebundle()
+  } else {
+  rebundle().pipe(exit());
+  }
+}
+
+function watching() {
+  return compileAgain(true);
+}
+
+gulp.task('buildSpec', function() { return compileAgain(); });
+gulp.task('watchSpec', function() { return watching(); });
 
 // gulp default tasks
 gulp.task('default', ['nodemon', 'browser-sync', 'browser-sync-jasmine'], () => {
-  gulp.watch(['src/js/*.js'], ['scripts']);
   gulp.watch(['src/jasmine/*.js', 'src/jasmine/spec/*.js'], browserSyncJasmine.reload);
   gulp.watch(['src/sass/*.scss', 'src/public/**/*.css'], ['css']);
   gulp.watch(['src/views/*.jade', 'src/public/js/*.js'], ['bs-reload']);
