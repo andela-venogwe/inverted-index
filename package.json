@@ -23,6 +23,7 @@
     "browser-sync": "^2.18.1",
     "browserify": "^13.1.1",
     "eslint": "^3.10.2",
+    "eslint-config-airbnb": "^13.0.0",
     "eslint-config-airbnb-base": "^10.0.1",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
@@ -40,9 +41,14 @@
     "gulp-nodemon": "^2.2.1",
     "gulp-plumber": "^1.1.0",
     "gulp-restart": "^0.1.1",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-uglify": "^2.0.0",
     "gulp-watch": "^4.3.10",
     "node-sass": "^3.13.0",
     "node-sass-middleware": "0.10.0",
-    "vinyl-transform": "^1.0.0"
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "vinyl-transform": "^1.0.0",
+    "watchify": "^3.7.0"
   }
 }

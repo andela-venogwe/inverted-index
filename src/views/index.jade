@@ -46,7 +46,7 @@ block content
           md-select(ng-model='selected', multiple, required)
             md-select-header
               label Files
-              md-option(ng-repeat="doc in currentDocuments",value='{{doc}}') {{doc}}
+              md-option(ng-repeat="doc in currentDocuments track by $index",value='{{doc}}') {{doc}}
         md-button(aria-label='Search', ng-click='search(word, selected); data.selectedIndex = 1')
           ng-md-icon(icon='search')
         md-button(aria-label='Open Settings', ng-click='toggleLeft()')
@@ -103,7 +103,7 @@ block content
                     thead
                       tr
                         td.marker Words
-                        td.marker(ng-repeat="(t, item) in uploadedFileContents[k]") Doc_{{t}}
+                        td.marker(ng-repeat="(t, item) in uploadedFileContents[k]") Document_{{t}}
                       tr(ng-repeat="(key, value) in v")
                         td.marker {{key}}
                         td.marker(ng-repeat="(t, item) in uploadedFileContents[k]")

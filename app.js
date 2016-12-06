@@ -5,7 +5,6 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const sass = require('node-sass-middleware');
 const index = require('./routes/index');
-const uploads = require('./routes/uploads');
 
 const app = express();
 
