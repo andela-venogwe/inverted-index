@@ -37,6 +37,9 @@ Inverted index takes a JSON array of text objects and creates an index from the 
 - Start a local server `npm start`
 - To test the app run: `npm test`
 
+## Web Deployment
+- [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/andela-venogwe/inverted-index)
+
 ## Contributing
 1. Fork this repositry to your account.
 1. Clone your repositry: `git clone git@github.com:your-username/inverted-index.git`
