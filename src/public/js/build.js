@@ -22,6 +22,7 @@ var InvertedIndex = function () {
     this.reference = {};
     this.documentFiles = {};
     this.currentDocuments = [];
+    this.allWords = [];
   }
 
   /**
@@ -49,6 +50,7 @@ var InvertedIndex = function () {
             var documentName = _this.utility.formatFileName(url);
             _this.utility.populateReference(savedTokens.tokens, _this, documentName);
             _this.currentDocuments.push(documentName);
+            _this.allWords = _this.utility.unique(_this.allWords.concat(savedTokens.words));
             return _this.reference[documentName];
           }
         } catch (error) {
@@ -68,12 +70,12 @@ var InvertedIndex = function () {
     value: function getIndex(documentName) {
       return this.reference[documentName];
     }
-    /* eslint-disable consistent-return */
+
     /**
-    * Search inverted index.
+    * Search the inverted index.
     * @param {string} value - The current search query.
     * @param {array} documentNames - an array of current files to searxh.
-    * @returns {object} An object with the searxh results.
+    * @returns {object} An object with the accurate searxh results.
     */
 
   }, {
@@ -83,11 +85,15 @@ var InvertedIndex = function () {
 
       /* eslint-disable no-unused-expressions */
       /* eslint-disable no-unused-vars */
+      /* eslint-disable no-nested-ternary */
       this.searchReturn = {};
-      if (value !== (null || undefined)) {
-        this.utility.inputFIlter(value).forEach(function (word) {
+      if (value !== (null || undefined) && documentNames.length > 0) {
+        this.utility.inputFIlter(value).filter(function (word) {
+          return _this2.allWords.indexOf(word) !== -1;
+        }).forEach(function (word) {
           documentNames.forEach(function (documentFile) {
-            _typeof(_this2.searchReturn[documentFile]) === 'object' && !Array.isArray(_this2.searchReturn[documentFile]) ? _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word] : (_this2.searchReturn[documentFile] = {}, _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word]);
+            var docKeys = Object.keys(_this2.reference[documentFile]);
+            _typeof(_this2.searchReturn[documentFile]) === 'object' && !Array.isArray(_this2.searchReturn[documentFile]) ? docKeys.indexOf(word) !== -1 ? _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word] : null : docKeys.indexOf(word) !== -1 ? (_this2.searchReturn[documentFile] = {}, _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word]) : null;
           });
         });
         return this.searchReturn;
@@ -177,8 +183,12 @@ var Utils = function () {
   }, {
     key: 'isValidJson',
     value: function isValidJson(jsonObject) {
-      var jsonObjectKeys = Object.keys(jsonObject);
-      var jsonObjectLength = jsonObjectKeys.length;
+      try {
+        var jsonObjectKeys = Object.keys(jsonObject);
+        var _jsonObjectLength = jsonObjectKeys.length;
+      } catch (error) {
+        return false;
+      }
       var count = 0;
       var ans = true;
       if (jsonObjectLength > 0) {
@@ -228,14 +238,16 @@ var Utils = function () {
       try {
         var _ret2 = function () {
           var tokens = {};
+          var words = [];
           jsonObject.forEach(function (documentObject, index) {
             var token = '';
             token = documentObject.title + ' ' + documentObject.text;
             var uniqueTokens = _this.unique(token.toLowerCase().match(/\w+/g).sort());
             tokens[index] = uniqueTokens;
+            words = words.concat(uniqueTokens);
           });
           return {
-            v: { tokens: tokens, jsonObject: jsonObject }
+            v: { tokens: tokens, jsonObject: jsonObject, words: words }
           };
         }();
 
@@ -338,16 +350,18 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
   $scope.uploadedFileContents = appIndex.documentFiles;
   $scope.search = searchIndex;
   $scope.currentDocuments = [];
-  // $scope.autoComplete = autoComplete;
   $scope.canUpload = false;
   $scope.sidebarOpen = true;
   $scope.selected = '';
   $scope.changeState = function () {
-    $scope.state = $scope.state === true ? false : true;
+    /* eslint-disable no-unneeded-ternary */
+    $scope.state = $scope.state ? false : true;
   };
+
   $scope.changeStateAgain = function () {
     $scope.state = false;
   };
+
   // menu toggler
   function buildToggler(componentId) {
     return function toggle() {
@@ -397,8 +411,6 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
     $scope.fileKeys = Object.keys($scope.files).filter(function (key) {
       return key !== 'length';
     });
-
-    // document.getElementById('selected-files').innerHTML = '';
     $scope.filesSelected = $scope.fileKeys.map(function (file) {
       return $scope.files[file].name;
     });
@@ -539,7 +551,6 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
         $scope.headers = Object.keys(appIndex.documentFiles[documentName]);
         $scope.words = appIndex.reference[documentName];
         $scope.currentDocuments.push(documentName);
-        //$scope.autocompleteOptions = appIndex.reference[documentName];
         document.getElementById(documentName + 'Create').innerHTML = 'GET INDEX';
       } else {
         showMessage('invalid');
@@ -553,22 +564,6 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
       $scope.searchResults = appIndex.searchIndex(value, documentNames);
     }
   }
-
-  // // autocomplete search input
-  // function autoComplete(string) {
-  //   $scope.hidethis = false;
-  //   const output = [];
-  //   angular.forEach($scope.autocompleteOptions, (word) => {
-  //     if (word.toLowerCase().indexOf(string.toLowerCase()) >= 0) {
-  //       output.push(word);
-  //     }
-  //   });
-  //   $scope.filterWords = output;
-  //   $scope.fillTextbox = (string) => {
-  //     $scope.word = string;
-  //     $scope.hidethis = true;
-  //   };
-  // }
 }
 
 function themeMaterial($mdThemingProvider) {
@@ -590,12 +585,13 @@ app.config(themeMaterial);
 
 app.controller('InvertedIndexController', invertedIndexController);
 
+/* eslint-disable arrow-body-style */
 app.directive('ngEnter', function () {
   return function (scope, element, attrs) {
-    element.bind("keydown keypress", function (event) {
+    element.bind('keydown keypress', function (event) {
       if (event.which === 13) {
         scope.$apply(function () {
-          scope.$eval(attrs.ngEnter);
+          return scope.$eval(attrs.ngEnter);
         });
         event.preventDefault();
       }

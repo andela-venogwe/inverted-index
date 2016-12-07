@@ -37,16 +37,18 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
   $scope.uploadedFileContents = appIndex.documentFiles;
   $scope.search = searchIndex;
   $scope.currentDocuments = [];
-  // $scope.autoComplete = autoComplete;
   $scope.canUpload = false;
   $scope.sidebarOpen = true;
   $scope.selected = '';
   $scope.changeState = () => {
-    $scope.state = $scope.state === true ? false : true;
-  }
+    /* eslint-disable no-unneeded-ternary */
+    $scope.state = $scope.state ? false : true;
+  };
+
   $scope.changeStateAgain = () => {
     $scope.state = false;
-  }
+  };
+
   // menu toggler
   function buildToggler(componentId) {
     return function toggle() {
@@ -94,8 +96,6 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
     cheating.style.display = 'none';
     $scope.files = inputArea.files;
     $scope.fileKeys = Object.keys($scope.files).filter(key => key !== 'length');
-
-    // document.getElementById('selected-files').innerHTML = '';
     $scope.filesSelected = $scope.fileKeys.map(file => $scope.files[file].name);
 
     selectArea.innerHTML = '';
@@ -229,8 +229,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
         $scope.headers = Object.keys(appIndex.documentFiles[documentName]);
         $scope.words = appIndex.reference[documentName];
         $scope.currentDocuments.push(documentName);
-        //$scope.autocompleteOptions = appIndex.reference[documentName];
-        document.getElementById(documentName + 'Create').innerHTML = 'GET INDEX';
+        document.getElementById(`${documentName}Create`).innerHTML = 'GET INDEX';
       } else { showMessage('invalid'); }
     });
   }
@@ -241,22 +240,6 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
       $scope.searchResults = appIndex.searchIndex(value, documentNames);
     }
   }
-
-  // // autocomplete search input
-  // function autoComplete(string) {
-  //   $scope.hidethis = false;
-  //   const output = [];
-  //   angular.forEach($scope.autocompleteOptions, (word) => {
-  //     if (word.toLowerCase().indexOf(string.toLowerCase()) >= 0) {
-  //       output.push(word);
-  //     }
-  //   });
-  //   $scope.filterWords = output;
-  //   $scope.fillTextbox = (string) => {
-  //     $scope.word = string;
-  //     $scope.hidethis = true;
-  //   };
-  // }
 }
 
 function themeMaterial($mdThemingProvider) {
@@ -281,13 +264,12 @@ app.config(themeMaterial);
 
 app.controller('InvertedIndexController', invertedIndexController);
 
-app.directive('ngEnter', function () {
-  return function (scope, element, attrs) {
-    element.bind("keydown keypress", function (event) {
-      if(event.which === 13) {
-        scope.$apply(function (){
-          scope.$eval(attrs.ngEnter);
-        });
+/* eslint-disable arrow-body-style */
+app.directive('ngEnter', () => {
+  return (scope, element, attrs) => {
+    element.bind('keydown keypress', (event) => {
+      if (event.which === 13) {
+        scope.$apply(() => scope.$eval(attrs.ngEnter));
         event.preventDefault();
       }
     });

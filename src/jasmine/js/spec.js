@@ -189,6 +189,7 @@ var InvertedIndex = function () {
     this.reference = {};
     this.documentFiles = {};
     this.currentDocuments = [];
+    this.allWords = [];
   }
 
   /**
@@ -216,6 +217,7 @@ var InvertedIndex = function () {
             var documentName = _this.utility.formatFileName(url);
             _this.utility.populateReference(savedTokens.tokens, _this, documentName);
             _this.currentDocuments.push(documentName);
+            _this.allWords = _this.utility.unique(_this.allWords.concat(savedTokens.words));
             return _this.reference[documentName];
           }
         } catch (error) {
@@ -235,12 +237,12 @@ var InvertedIndex = function () {
     value: function getIndex(documentName) {
       return this.reference[documentName];
     }
-    /* eslint-disable consistent-return */
+
     /**
-    * Search inverted index.
+    * Search the inverted index.
     * @param {string} value - The current search query.
     * @param {array} documentNames - an array of current files to searxh.
-    * @returns {object} An object with the searxh results.
+    * @returns {object} An object with the accurate searxh results.
     */
 
   }, {
@@ -250,11 +252,15 @@ var InvertedIndex = function () {
 
       /* eslint-disable no-unused-expressions */
       /* eslint-disable no-unused-vars */
+      /* eslint-disable no-nested-ternary */
       this.searchReturn = {};
-      if (value !== (null || undefined)) {
-        this.utility.inputFIlter(value).forEach(function (word) {
+      if (value !== (null || undefined) && documentNames.length > 0) {
+        this.utility.inputFIlter(value).filter(function (word) {
+          return _this2.allWords.indexOf(word) !== -1;
+        }).forEach(function (word) {
           documentNames.forEach(function (documentFile) {
-            _typeof(_this2.searchReturn[documentFile]) === 'object' && !Array.isArray(_this2.searchReturn[documentFile]) ? _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word] : (_this2.searchReturn[documentFile] = {}, _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word]);
+            var docKeys = Object.keys(_this2.reference[documentFile]);
+            _typeof(_this2.searchReturn[documentFile]) === 'object' && !Array.isArray(_this2.searchReturn[documentFile]) ? docKeys.indexOf(word) !== -1 ? _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word] : null : docKeys.indexOf(word) !== -1 ? (_this2.searchReturn[documentFile] = {}, _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word]) : null;
           });
         });
         return this.searchReturn;
@@ -344,8 +350,12 @@ var Utils = function () {
   }, {
     key: 'isValidJson',
     value: function isValidJson(jsonObject) {
-      var jsonObjectKeys = Object.keys(jsonObject);
-      var jsonObjectLength = jsonObjectKeys.length;
+      try {
+        var jsonObjectKeys = Object.keys(jsonObject);
+        var _jsonObjectLength = jsonObjectKeys.length;
+      } catch (error) {
+        return false;
+      }
       var count = 0;
       var ans = true;
       if (jsonObjectLength > 0) {
@@ -395,14 +405,16 @@ var Utils = function () {
       try {
         var _ret2 = function () {
           var tokens = {};
+          var words = [];
           jsonObject.forEach(function (documentObject, index) {
             var token = '';
             token = documentObject.title + ' ' + documentObject.text;
             var uniqueTokens = _this.unique(token.toLowerCase().match(/\w+/g).sort());
             tokens[index] = uniqueTokens;
+            words = words.concat(uniqueTokens);
           });
           return {
-            v: { tokens: tokens, jsonObject: jsonObject }
+            v: { tokens: tokens, jsonObject: jsonObject, words: words }
           };
         }();
 

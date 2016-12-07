@@ -47,8 +47,12 @@ class Utils {
   * @returns {boolean} ans - The check for jsonObject validity.
   */
   static isValidJson(jsonObject) {
-    const jsonObjectKeys = Object.keys(jsonObject);
-    const jsonObjectLength = jsonObjectKeys.length;
+    try {
+      const jsonObjectKeys = Object.keys(jsonObject);
+      const jsonObjectLength = jsonObjectKeys.length;
+    } catch (error) {
+      return false;
+    }
     let count = 0;
     let ans = true;
     if (jsonObjectLength > 0) {
@@ -93,14 +97,16 @@ class Utils {
   static saveTokens(jsonObject) {
     try {
       const tokens = {};
+      let words = [];
       jsonObject.forEach((documentObject, index) => {
         let token = '';
         token = `${documentObject.title} ${documentObject.text}`;
         const uniqueTokens = this.unique(token.toLowerCase().match(/\w+/g)
         .sort());
         tokens[index] = uniqueTokens;
+        words = words.concat(uniqueTokens);
       });
-      return { tokens, jsonObject };
+      return { tokens, jsonObject, words };
     } catch (error) {
       throw error;
     }

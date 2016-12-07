@@ -44,12 +44,17 @@ block content
           | Back
         md-input-container(md-theme='input', flex="90")
           label  
-          input(ng-model='word', ng-enter="search(word, selected); data.selectedIndex = 1", placeholder='search indexes', required)
+          input(placeholder='enter your search terms ', md-maxlength="50", md-minlength="1", required, md-no-asterisk, max-length="50", min-length="1", ng-model='word', ng-enter="search(word, selected); data.selectedIndex = 1")
+          div(ng-messages="word.$error", role="alert")
+            div(ng-message="required")
+            div(ng-message="md-maxlength")
         md-input-container(md-theme-input, flex="10")
           md-select(ng-model='selected', multiple, required)
             md-select-header
               label Files
               md-option(ng-repeat="doc in currentDocuments track by $index",value='{{doc}}') {{doc}}
+          div(ng-messages="selected.$error", role="alert")
+            div(ng-message="required")
         md-button(aria-label='Search', ng-click='search(word, selected); data.selectedIndex = 1')
           ng-md-icon(icon='search')
         md-button(aria-label='Open Settings', ng-click='toggleLeft()')
