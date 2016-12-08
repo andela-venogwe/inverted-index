@@ -34,7 +34,7 @@ Inverted index takes a JSON array of text objects and creates an index from the 
 - To test the app run: `npm test`
 
 ## Web Deployment
-- [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/andela-venogwe/inverted-index)
+- [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/andela-venogwe/inverted-index/tree/refactor)
 
 ## Contributing
 1. Fork this repositry to your account.
