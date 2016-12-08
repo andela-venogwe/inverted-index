@@ -26,6 +26,8 @@ const gulp = require('gulp');
 
 const istanbul = require('gulp-istanbul');
 
+const  isparta = require('isparta');
+
 const jasmine = require('gulp-jasmine');
 
 const cover = require('gulp-coverage');
@@ -54,19 +56,27 @@ gulp.task('lint', () => {
     .pipe(eslint.format());
 });
 
-
-gulp.task('jasmine', () => {
-  return gulp.src('src/jasmine/spec/inverted-index-test.js')
-    .pipe(jasmine())
-    .pipe(istanbul())
-    .pipe(istanbul.hookRequire())
-    .pipe(istanbul.writeReports({
-      reporters: [ 'lcov' ],
+// run pre test cover gathering
+gulp.task('pre-test', () => {
+  return gulp.src(['src/js/*.js'])
+    .pipe(istanbul({ // Covering files
+        instrumenter: isparta.Instrumenter,
+        includeUntested: false
     }))
-    .on('end', function(){
-      gulp.src('/coverage/lcov.info')
-      .pipe(coveralls());
-    })
+    .pipe(istanbul.hookRequire());
+});
+
+// run jasmine test
+gulp.task('jasmine',['pre-test'], () => {
+  return gulp.src('src/jasmine/spec/inverted-index-test.js')
+  .pipe(jasmine())
+  .pipe(istanbul.writeReports({
+    reporters: [ 'lcov' ],
+  }))
+  .on('end', function(){
+    gulp.src('/coverage/lcov.info')
+    .pipe(coveralls());
+  })
 });
 
 // run the nodemon server reload

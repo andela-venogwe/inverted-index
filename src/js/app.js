@@ -203,12 +203,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
 
   // show message on create index or get index
   const showMessage = (message) => {
-    $mdToast.show(
-      $mdToast.simple()
-      .textContent(message)
-      .position('left')
-      .hideDelay(3000),
-    );
+    $mdToast.show( $mdToast.simple().textContent(message).position('left').hideDelay(3000));
   };
 
   // create index function

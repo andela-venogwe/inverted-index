@@ -4,7 +4,7 @@ const InvertedIndex = require('../../js/Inverted-index.js');
 
 const index = new InvertedIndex();
 
-const Utils = require('../../js/Utils.js');
+const Utils = require('../../js/Inverted-Index-Helper.js');
 
 const books = require('../books.json');
 
