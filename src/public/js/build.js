@@ -1,113 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 /**
- * Class for creating an inverted index.
- */
-var InvertedIndex = function () {
-  /**
-  * Instantiate an inverted index object.
-  * @param {object} reference - The utility class.
-  */
-  function InvertedIndex(utils) {
-    _classCallCheck(this, InvertedIndex);
-
-    this.utility = utils;
-    this.reference = {};
-    this.documentFiles = {};
-    this.currentDocuments = [];
-    this.allWords = [];
-  }
-
-  /**
-  * Create an inverted index from file
-  * @param {string} url - The json file url.
-  * @returns {object} The reference object for current file.
-  */
-
-
-  _createClass(InvertedIndex, [{
-    key: 'createIndex',
-    value: function createIndex(url) {
-      var _this = this;
-
-      /* eslint-disable no-unused-vars */
-      /* eslint-disable consistent-return */
-      return new Promise(function (resolve, reject) {
-        _this.utility.getJSON(url, function (data) {
-          resolve(data.response);
-        });
-      }).then(function (jsonObject) {
-        try {
-          if (_this.utility.isValidJson(jsonObject)) {
-            var savedTokens = _this.utility.saveTokens(jsonObject);
-            var documentName = _this.utility.formatFileName(url);
-            _this.utility.populateReference(savedTokens.tokens, _this, documentName);
-            _this.currentDocuments.push(documentName);
-            _this.allWords = _this.utility.unique(_this.allWords.concat(savedTokens.words));
-            return _this.reference[documentName];
-          }
-        } catch (error) {
-          throw error;
-        }
-      });
-    }
-
-    /**
-    * Get Created inverted index.
-    * @param {string} documentName - The file name of currently indexed document.
-    * @returns {object} The reference object for current file.
-    */
-
-  }, {
-    key: 'getIndex',
-    value: function getIndex(documentName) {
-      return this.reference[documentName];
-    }
-
-    /**
-    * Search the inverted index.
-    * @param {string} value - The current search query.
-    * @param {array} documentNames - an array of current files to searxh.
-    * @returns {object} An object with the accurate searxh results.
-    */
-
-  }, {
-    key: 'searchIndex',
-    value: function searchIndex(value, documentNames) {
-      var _this2 = this;
-
-      /* eslint-disable no-unused-expressions */
-      /* eslint-disable no-unused-vars */
-      /* eslint-disable no-nested-ternary */
-      this.searchReturn = {};
-      if (value !== (null || undefined) && documentNames.length > 0) {
-        this.utility.inputFIlter(value).filter(function (word) {
-          return _this2.allWords.indexOf(word) !== -1;
-        }).forEach(function (word) {
-          documentNames.forEach(function (documentFile) {
-            var docKeys = Object.keys(_this2.reference[documentFile]);
-            _typeof(_this2.searchReturn[documentFile]) === 'object' && !Array.isArray(_this2.searchReturn[documentFile]) ? docKeys.indexOf(word) !== -1 ? _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word] : null : docKeys.indexOf(word) !== -1 ? (_this2.searchReturn[documentFile] = {}, _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word]) : null;
-          });
-        });
-        return this.searchReturn;
-      }
-    }
-  }]);
-
-  return InvertedIndex;
-}();
-
-module.exports = InvertedIndex;
-
-},{}],2:[function(require,module,exports){
-'use strict';
+* Helper Class for creating an inverted index.
+*/
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -115,12 +11,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Utils = function () {
-  function Utils() {
-    _classCallCheck(this, Utils);
+var InvertedIndexHelper = function () {
+  function InvertedIndexHelper() {
+    _classCallCheck(this, InvertedIndexHelper);
   }
 
-  _createClass(Utils, null, [{
+  _createClass(InvertedIndexHelper, null, [{
     key: 'unique',
 
     /** remove array duplicates.
@@ -183,9 +79,11 @@ var Utils = function () {
   }, {
     key: 'isValidJson',
     value: function isValidJson(jsonObject) {
+      var jsonObjectKeys = null;
+      var jsonObjectLength = null;
       try {
-        var jsonObjectKeys = Object.keys(jsonObject);
-        var _jsonObjectLength = jsonObjectKeys.length;
+        jsonObjectKeys = Object.keys(jsonObject);
+        jsonObjectLength = jsonObjectKeys.length;
       } catch (error) {
         return false;
       }
@@ -303,10 +201,123 @@ var Utils = function () {
     }
   }]);
 
-  return Utils;
+  return InvertedIndexHelper;
 }();
 
-module.exports = Utils;
+module.exports = InvertedIndexHelper;
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
+/**
+ * Class for creating an inverted index.
+ */
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var InvertedIndex = function () {
+  /**
+  * Instantiate an inverted index object.
+  * @param {object} utility - The InvertedIndexHelper class.
+  */
+  function InvertedIndex(utility) {
+    _classCallCheck(this, InvertedIndex);
+
+    this.utility = utility;
+    this.reference = {};
+    this.documentFiles = {};
+    this.currentDocuments = [];
+    this.allWords = [];
+  }
+
+  /**
+  * Create an inverted index from file
+  * @param {string} url - The json file url.
+  * @returns {object} The reference object for current file.
+  */
+
+
+  _createClass(InvertedIndex, [{
+    key: 'createIndex',
+    value: function createIndex(url) {
+      var _this = this;
+
+      /* eslint-disable no-unused-vars */
+      /* eslint-disable consistent-return */
+      return new Promise(function (resolve, reject) {
+        _this.utility.getJSON(url, function (data) {
+          resolve(data.response);
+        });
+      }).then(function (jsonObject) {
+        try {
+          if (_this.utility.isValidJson(jsonObject)) {
+            var savedTokens = _this.utility.saveTokens(jsonObject);
+            var documentName = _this.utility.formatFileName(url);
+            _this.utility.populateReference(savedTokens.tokens, _this, documentName);
+            _this.currentDocuments.push(documentName);
+            _this.allWords = _this.utility.unique(_this.allWords.concat(savedTokens.words));
+            return _this.reference[documentName];
+          }
+        } catch (error) {
+          throw error;
+        }
+      });
+    }
+
+    /**
+    * Get Created inverted index.
+    * @param {string} documentName - The file name of currently indexed document.
+    * @returns {object} The reference object for current file.
+    */
+
+  }, {
+    key: 'getIndex',
+    value: function getIndex(documentName) {
+      return this.reference[documentName];
+    }
+
+    /**
+    * Search the inverted index.
+    * @param {string} value - The current search query.
+    * @param {array} documentNames - an array of current files to searxh.
+    * @returns {object} An object with the accurate search results.
+    */
+
+  }, {
+    key: 'searchIndex',
+    value: function searchIndex(value, documentNames) {
+      var _this2 = this;
+
+      /* eslint-disable no-unused-expressions */
+      /* eslint-disable no-unused-vars */
+      /* eslint-disable no-nested-ternary */
+      this.searchReturn = {};
+      if (value !== (null || undefined) && documentNames.length > 0) {
+        this.utility.inputFIlter(value).filter(function (word) {
+          return _this2.allWords.indexOf(word) !== -1;
+        }).forEach(function (word) {
+          documentNames.forEach(function (documentFile) {
+            var docKeys = Object.keys(_this2.reference[documentFile]);
+            _typeof(_this2.searchReturn[documentFile]) === 'object' && !Array.isArray(_this2.searchReturn[documentFile]) ? docKeys.indexOf(word) !== -1 ? _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word] : null : docKeys.indexOf(word) !== -1 ? (_this2.searchReturn[documentFile] = {}, _this2.searchReturn[documentFile][word] = _this2.reference[documentFile][word]) : null;
+          });
+        });
+        if (Object.keys(this.searchReturn).length < 1) {
+          return { 'No results found : please refine your search query': '' };
+        }
+        return this.searchReturn;
+      }
+      return { 'Please enter search query and select index to search': '' };
+    }
+  }]);
+
+  return InvertedIndex;
+}();
+
+module.exports = InvertedIndex;
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -317,11 +328,11 @@ module.exports = Utils;
 
 var InvertedIndex = require('./Inverted-index.js');
 
-var Utils = require('./Utils.js');
+var Utility = require('./Inverted-Index-Helper.js');
 
 var app = angular.module('Index', ['ngMaterial', 'ngMdIcons']);
 
-var appIndex = new InvertedIndex(Utils);
+var appIndex = new InvertedIndex(Utility);
 
 var uploaded = [];
 var fileNames = [];
@@ -447,6 +458,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
 
     if ($scope.canUpload) {
       (function () {
+        $scope.canUpload = false;
         // create a FormData object which will be sent as the data payload in the
         // AJAX request
         var files = $(_this).get(0).files;
@@ -511,7 +523,6 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
               uploadDone.style.display = 'block';
               $scope.sidebarOpen ? $scope.toggleLeft() : null;
               $scope.sidebarOpen = false;
-              $scope.canUpload = false;
             }, 2000);
           },
           xhr: function theXhr() {
@@ -530,38 +541,63 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
   }
 
   // show message on create index or get index
-  var showMessage = function showMessage(messageType) {
-    var message = '';
-    messageType === 'invalid' ? message = 'Invalid Json File!' : message = 'Index Has Been Created!';
+  var showMessage = function showMessage(message) {
     $mdToast.show($mdToast.simple().textContent(message).position('left').hideDelay(3000));
   };
 
-  // show get index message
-  $scope.showGetIndexMessage = showMessage;
-
-  // show create index message
-  $scope.showCreateIndexMessage = showMessage;
-
   // create index function
   function createIndex(b) {
-    var documentName = Utils.formatFileName(b);
+    var documentName = Utility.formatFileName(b);
     appIndex.createIndex(b).then(function (data) {
-      if (data !== undefined) {
+      if (data === undefined) {
+        showMessage('Invalid Json File!');
+        $scope.title = 'Invalid Json File!';
+        $scope.headers = [];
+        $scope.words = {};
+        $timeout(function () {
+          document.getElementById('indextitle').style.display = 'none';
+          document.getElementById('badfile').style.display = 'block';
+          document.getElementById('indexresults').style.display = 'none';
+        }, 10);
+        document.getElementById(documentName + 'Create').innerHTML = 'INVALID FILE';
+      } else {
+        showMessage('Index Has Been Populated!');
         $scope.title = documentName;
         $scope.headers = Object.keys(appIndex.documentFiles[documentName]);
         $scope.words = appIndex.reference[documentName];
         $scope.currentDocuments.push(documentName);
+        $timeout(function () {
+          document.getElementById('badfile').style.display = 'none';
+          document.getElementById('indextitle').style.display = 'block';
+          document.getElementById('indexresults').style.display = 'block';
+        }, 10);
         document.getElementById(documentName + 'Create').innerHTML = 'GET INDEX';
-      } else {
-        showMessage('invalid');
       }
     });
   }
 
   // search index function
   function searchIndex(value, documentNames) {
-    if (documentNames !== undefined && value !== undefined) {
-      $scope.searchResults = appIndex.searchIndex(value, documentNames);
+    var searchResults = appIndex.searchIndex(value, documentNames);
+    if (Object.keys(searchResults)[0] === 'No results found : please refine your search query') {
+      $scope.searchResults = {
+        'No results found : please refine your search query': ''
+      };
+      $timeout(function () {
+        document.getElementById('searchhead').style.display = 'none';
+      }, 10);
+    } else if (Object.keys(searchResults)[0] === 'Please enter search query and select index to search') {
+      $scope.searchResults = {
+        'Please enter search query and select index to search': ''
+      };
+      $timeout(function () {
+        document.getElementById('searchhead').style.display = 'none';
+      }, 10);
+    } else {
+      $scope.searchResults = searchResults;
+      $timeout(function () {
+        document.getElementById('searchhead').style.display = 'block';
+      }, 10);
     }
   }
 }
@@ -599,6 +635,6 @@ app.directive('ngEnter', function () {
   };
 });
 
-},{"./Inverted-index.js":1,"./Utils.js":2}]},{},[3]);
+},{"./Inverted-Index-Helper.js":1,"./Inverted-index.js":2}]},{},[3]);
 
 //# sourceMappingURL=build.js.map

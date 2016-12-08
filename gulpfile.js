@@ -56,7 +56,7 @@ gulp.task('lint', () => {
 
 
 gulp.task('jasmine', () => {
-  return gulp.src('src/jasmine/js/spec.js')
+  return gulp.src('src/jasmine/spec/inverted-index-test.js')
     .pipe(jasmine())
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())

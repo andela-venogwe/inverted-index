@@ -4,11 +4,11 @@
 
 const InvertedIndex = require('./Inverted-index.js');
 
-const Utils = require('./Utils.js');
+const Utility = require('./Inverted-Index-Helper.js');
 
 const app = angular.module('Index', ['ngMaterial', 'ngMdIcons']);
 
-const appIndex = new InvertedIndex(Utils);
+const appIndex = new InvertedIndex(Utility);
 
 const uploaded = [];
 const fileNames = [];
@@ -142,6 +142,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
   // upload json file(s) function
   function uploadJson(e) {
     if ($scope.canUpload) {
+      $scope.canUpload = false;
       // create a FormData object which will be sent as the data payload in the
       // AJAX request
       const files = $(this).get(0).files;
@@ -184,7 +185,6 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
             uploadDone.style.display = 'block';
             $scope.sidebarOpen ? $scope.toggleLeft() : null;
             $scope.sidebarOpen = false;
-            $scope.canUpload = false;
           }, 2000);
         },
         xhr: function theXhr() {
@@ -202,10 +202,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
   }
 
   // show message on create index or get index
-  const showMessage = (messageType) => {
-    let message = '';
-    messageType === 'invalid' ? (message = 'Invalid Json File!') :
-    (message = 'Index Has Been Created!');
+  const showMessage = (message) => {
     $mdToast.show(
       $mdToast.simple()
       .textContent(message)
@@ -214,30 +211,61 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
     );
   };
 
-  // show get index message
-  $scope.showGetIndexMessage = showMessage;
-
-  // show create index message
-  $scope.showCreateIndexMessage = showMessage;
-
   // create index function
   function createIndex(b) {
-    const documentName = Utils.formatFileName(b);
+    const documentName = Utility.formatFileName(b);
     appIndex.createIndex(b).then((data) => {
-      if (data !== undefined) {
+      if (data === undefined) {
+        showMessage('Invalid Json File!');
+        $scope.title = 'Invalid Json File!';
+        $scope.headers = [];
+        $scope.words = {};
+        $timeout(() => {
+          document.getElementById('indextitle').style.display = 'none';
+          document.getElementById('badfile').style.display = 'block';
+          document.getElementById('indexresults').style.display = 'none';
+        }, 10);
+        document.getElementById(`${documentName}Create`).innerHTML = 'INVALID FILE';
+      } else {
+        showMessage('Index Has Been Populated!');
         $scope.title = documentName;
         $scope.headers = Object.keys(appIndex.documentFiles[documentName]);
         $scope.words = appIndex.reference[documentName];
         $scope.currentDocuments.push(documentName);
+        $timeout(() => {
+          document.getElementById('badfile').style.display = 'none';
+          document.getElementById('indextitle').style.display = 'block';
+          document.getElementById('indexresults').style.display = 'block';
+        }, 10);
         document.getElementById(`${documentName}Create`).innerHTML = 'GET INDEX';
-      } else { showMessage('invalid'); }
+      }
     });
   }
 
   // search index function
   function searchIndex(value, documentNames) {
-    if (documentNames !== undefined && value !== undefined) {
-      $scope.searchResults = appIndex.searchIndex(value, documentNames);
+    const searchResults = appIndex.searchIndex(value, documentNames);
+    if (Object.keys(searchResults)[0] ===
+      'No results found : please refine your search query') {
+      $scope.searchResults = {
+        'No results found : please refine your search query': '',
+      };
+      $timeout(() => {
+        document.getElementById('searchhead').style.display = 'none';
+      }, 10);
+    } else if (Object.keys(searchResults)[0] ===
+      'Please enter search query and select index to search') {
+      $scope.searchResults = {
+        'Please enter search query and select index to search': '',
+      };
+      $timeout(() => {
+        document.getElementById('searchhead').style.display = 'none';
+      }, 10);
+    } else {
+      $scope.searchResults = searchResults;
+      $timeout(() => {
+        document.getElementById('searchhead').style.display = 'block';
+      }, 10);
     }
   }
 }

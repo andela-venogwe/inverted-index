@@ -1,3 +1,5 @@
+'use strict';
+
 const InvertedIndex = require('../../js/Inverted-index.js');
 
 const index = new InvertedIndex();

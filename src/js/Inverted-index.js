@@ -1,13 +1,15 @@
+'use strict';
+
 /**
  * Class for creating an inverted index.
  */
 class InvertedIndex {
   /**
   * Instantiate an inverted index object.
-  * @param {object} reference - The utility class.
+  * @param {object} utility - The InvertedIndexHelper class.
   */
-  constructor(utils) {
-    this.utility = utils;
+  constructor(utility) {
+    this.utility = utility;
     this.reference = {};
     this.documentFiles = {};
     this.currentDocuments = [];
@@ -55,7 +57,7 @@ class InvertedIndex {
   * Search the inverted index.
   * @param {string} value - The current search query.
   * @param {array} documentNames - an array of current files to searxh.
-  * @returns {object} An object with the accurate searxh results.
+  * @returns {object} An object with the accurate search results.
   */
   searchIndex(value, documentNames) {
     /* eslint-disable no-unused-expressions */
@@ -79,8 +81,12 @@ class InvertedIndex {
             this.reference[documentFile][word]) : null);
         });
       });
+      if (Object.keys(this.searchReturn).length < 1) {
+        return { 'No results found : please refine your search query': '' };
+      }
       return this.searchReturn;
     }
+    return { 'Please enter search query and select index to search': '' };
   }
 }
 

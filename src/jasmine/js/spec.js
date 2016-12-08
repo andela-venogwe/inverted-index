@@ -350,9 +350,12 @@ var Utils = function () {
   }, {
     key: 'isValidJson',
     value: function isValidJson(jsonObject) {
+      var jsonObjectKeys = null;
+      var jsonObjectLength = null;
       try {
-        var jsonObjectKeys = Object.keys(jsonObject);
-        var _jsonObjectLength = jsonObjectKeys.length;
+        jsonObjectKeys = Object.keys(jsonObject);
+        jsonObjectLength = jsonObjectKeys.length;
+        console.log(jsonObjectKeys);
       } catch (error) {
         return false;
       }

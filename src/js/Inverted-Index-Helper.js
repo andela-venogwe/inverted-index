@@ -1,4 +1,9 @@
-class Utils {
+'use strict';
+
+/**
+* Helper Class for creating an inverted index.
+*/
+class InvertedIndexHelper {
   /** remove array duplicates.
   * @param {array} arr - The array to be filtered.
   * @returns {array} The filtered array.
@@ -47,9 +52,11 @@ class Utils {
   * @returns {boolean} ans - The check for jsonObject validity.
   */
   static isValidJson(jsonObject) {
+    let jsonObjectKeys = null;
+    let jsonObjectLength = null;
     try {
-      const jsonObjectKeys = Object.keys(jsonObject);
-      const jsonObjectLength = jsonObjectKeys.length;
+      jsonObjectKeys = Object.keys(jsonObject);
+      jsonObjectLength = jsonObjectKeys.length;
     } catch (error) {
       return false;
     }
@@ -154,4 +161,4 @@ class Utils {
   }
 }
 
-module.exports = Utils;
+module.exports = InvertedIndexHelper ;
