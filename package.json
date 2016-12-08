@@ -9,6 +9,16 @@
   "engines": {
     "node": "4.2.6"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andela-venogwe/inverted-index.git"
+  },
+  "author": "Enogwe Victor <victor.enogwe@andela.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andela-venogwe/inverted-index/issues"
+  },
+  "homepage": "https://github.com/andela-venogwe/inverted-index#readme",
   "dependencies": {
     "body-parser": "~1.15.2",
     "debug": "~2.2.0",
@@ -52,5 +62,12 @@
     "vinyl-source-stream": "^1.1.0",
     "vinyl-transform": "^1.0.0",
     "watchify": "^3.7.0"
-  }
+  },
+  "keywords": [
+    "es6",
+    "node",
+    "SASS",
+    "express",
+    "inverted-index"
+  ]
 }
