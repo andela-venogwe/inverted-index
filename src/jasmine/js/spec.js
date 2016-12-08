@@ -5,7 +5,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var InvertedIndex = require('../../js/Inverted-index.js');
 
-var Utils = require('../../js/Inverted-Index-Helper.js');
+var Utils = require('../../js/Inverted-Index-Utility.js');
 
 var index = new InvertedIndex(Utils);
 
@@ -149,7 +149,7 @@ index.createIndex('./src/public/uploads/books.json').then(function () {
   });
 });
 
-},{"../../js/Inverted-Index-Helper.js":2,"../../js/Inverted-index.js":3}],2:[function(require,module,exports){
+},{"../../js/Inverted-Index-Utility.js":2,"../../js/Inverted-index.js":3}],2:[function(require,module,exports){
 'use strict';
 
 /**

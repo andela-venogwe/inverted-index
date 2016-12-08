@@ -334,10 +334,11 @@ module.exports = InvertedIndex;
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+/* eslint-disable require-jsdoc */
 
 var InvertedIndex = require('./Inverted-index.js');
 
-var Utility = require('./Inverted-Index-Helper.js');
+var Utility = require('./Inverted-Index-Utility.js');
 
 var app = angular.module('Index', ['ngMaterial', 'ngMdIcons']);
 
@@ -646,6 +647,6 @@ app.directive('ngEnter', function () {
   };
 });
 
-},{"./Inverted-Index-Helper.js":1,"./Inverted-index.js":2}]},{},[3]);
+},{"./Inverted-Index-Utility.js":1,"./Inverted-index.js":2}]},{},[3]);
 
 //# sourceMappingURL=build.js.map

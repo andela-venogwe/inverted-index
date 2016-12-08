@@ -2,7 +2,7 @@
 
 const InvertedIndex = require('../../js/Inverted-index.js');
 
-const Utils = require('../../js/Inverted-Index-Helper.js');
+const Utils = require('../../js/Inverted-Index-Utility.js');
 
 const index = new InvertedIndex(Utils);
 
