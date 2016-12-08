@@ -342,6 +342,7 @@ var uploadDone = document.getElementById('upload-done');
 var uploadFailed = document.getElementById('upload-failed');
 var cheating = document.getElementById('cheating');
 
+// our inverted index controller
 function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $document, $timeout) {
   /* eslint-disable no-param-reassign */
   /* eslint-disable no-shadow */
@@ -565,7 +566,9 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
         $scope.title = documentName;
         $scope.headers = Object.keys(appIndex.documentFiles[documentName]);
         $scope.words = appIndex.reference[documentName];
-        $scope.currentDocuments.push(documentName);
+        if ($scope.currentDocuments.indexOf(documentName) === -1) {
+          $scope.currentDocuments.push(documentName);
+        }
         $timeout(function () {
           document.getElementById('badfile').style.display = 'none';
           document.getElementById('indextitle').style.display = 'block';

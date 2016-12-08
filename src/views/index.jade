@@ -17,7 +17,7 @@ block content
                | {{item.createindex}}
             p {{item.error || item.success}}
   div(layout="column", layout-fill, role="main").relative
-    md-button.md-fab.md-fab-bottom-right.md-primary(aria-label='Upload', ng-click='changeState()', style="margin-right: 90px;")
+    md-button.md-fab.md-fab-bottom-right.md-primary(aria-label='Upload', ng-click='changeState();  data.selectedIndex = 0', style="margin-right: 90px;")
       ng-md-icon(icon='help')
     md-button.md-fab.md-fab-bottom-right(aria-label='Upload', ng-click='showUploadBox($event)')
       ng-md-icon(icon='file_upload')
