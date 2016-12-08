@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "gulp jasmine"
+    "test": "gulp jasmine",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "engines": {
     "node": "4.2.6"
@@ -35,6 +36,7 @@
     "babelify": "^7.3.0",
     "browser-sync": "^2.18.1",
     "browserify": "^13.1.1",
+    "coveralls": "^2.11.15",
     "eslint": "^3.10.2",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-config-airbnb-base": "^10.0.1",
