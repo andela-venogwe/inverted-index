@@ -12,6 +12,7 @@ class InvertedIndex {
     this.utility = utility;
     this.reference = {};
     this.documentFiles = {};
+    this.currentFile = [];
     this.currentDocuments = [];
     this.allWords = [];
   }
@@ -33,6 +34,7 @@ class InvertedIndex {
         if (this.utility.isValidJson(jsonObject)) {
           const savedTokens = this.utility.saveTokens(jsonObject);
           const documentName = this.utility.formatFileName(url);
+          this.currentFile = jsonObject;
           this.utility.populateReference(savedTokens.tokens, this, documentName);
           this.currentDocuments.push(documentName);
           this.allWords = this.utility.unique(this.allWords.concat(savedTokens.words));
@@ -46,10 +48,11 @@ class InvertedIndex {
 
   /**
   * Get Created inverted index.
-  * @param {string} documentName - The file name of currently indexed document.
+  * @param {string} url - The file url of the json document.
   * @returns {object} The reference object for current file.
   */
-  getIndex(documentName) {
+  getIndex(url) {
+    const documentName = this.utility.formatFileName(url);
     return this.reference[documentName];
   }
 
@@ -64,7 +67,11 @@ class InvertedIndex {
     /* eslint-disable no-unused-vars */
     /* eslint-disable no-nested-ternary */
     this.searchReturn = {};
-    if (value !== (null || undefined) && documentNames.length > 0) {
+    if (value !== (null || undefined)) {
+      if (documentNames === undefined || documentNames.length < 1 ||
+        documentNames === '') {
+        documentNames = this.currentDocuments;
+      }
       this.utility.inputFIlter(value)
       .filter(word => this.allWords.indexOf(word) !== -1)
       .forEach((word) => {

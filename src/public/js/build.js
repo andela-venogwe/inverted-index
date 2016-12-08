@@ -194,7 +194,10 @@ var InvertedIndexHelper = function () {
   }, {
     key: 'inputFIlter',
     value: function inputFIlter(value) {
-      return value.replace(/[^\w\s]/gi, '').split(' ').filter(function (item) {
+      if (Array.isArray(value)) {
+        value = value.join(' ');
+      }
+      return value.toLowerCase().replace(/[^\w\s]/gi, '').split(' ').filter(function (item) {
         return (/\S/gi.test(item)
         );
       });
@@ -230,6 +233,7 @@ var InvertedIndex = function () {
     this.utility = utility;
     this.reference = {};
     this.documentFiles = {};
+    this.currentFile = [];
     this.currentDocuments = [];
     this.allWords = [];
   }
@@ -257,6 +261,7 @@ var InvertedIndex = function () {
           if (_this.utility.isValidJson(jsonObject)) {
             var savedTokens = _this.utility.saveTokens(jsonObject);
             var documentName = _this.utility.formatFileName(url);
+            _this.currentFile = jsonObject;
             _this.utility.populateReference(savedTokens.tokens, _this, documentName);
             _this.currentDocuments.push(documentName);
             _this.allWords = _this.utility.unique(_this.allWords.concat(savedTokens.words));
@@ -270,13 +275,14 @@ var InvertedIndex = function () {
 
     /**
     * Get Created inverted index.
-    * @param {string} documentName - The file name of currently indexed document.
+    * @param {string} url - The file url of the json document.
     * @returns {object} The reference object for current file.
     */
 
   }, {
     key: 'getIndex',
-    value: function getIndex(documentName) {
+    value: function getIndex(url) {
+      var documentName = this.utility.formatFileName(url);
       return this.reference[documentName];
     }
 
@@ -296,7 +302,10 @@ var InvertedIndex = function () {
       /* eslint-disable no-unused-vars */
       /* eslint-disable no-nested-ternary */
       this.searchReturn = {};
-      if (value !== (null || undefined) && documentNames.length > 0) {
+      if (value !== (null || undefined)) {
+        if (documentNames === undefined || documentNames.length < 1 || documentNames === '') {
+          documentNames = this.currentDocuments;
+        }
         this.utility.inputFIlter(value).filter(function (word) {
           return _this2.allWords.indexOf(word) !== -1;
         }).forEach(function (word) {

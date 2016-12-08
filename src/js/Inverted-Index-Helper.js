@@ -155,7 +155,10 @@ class InvertedIndexHelper {
   * @returns {array} The filtered search query.
   */
   static inputFIlter(value) {
-    return value.replace(/[^\w\s]/gi, '')
+    if(Array.isArray(value)){
+      value = value.join(' ');
+    }
+    return value.toLowerCase().replace(/[^\w\s]/gi, '')
     .split(' ')
     .filter(item => /\S/gi.test(item));
   }
