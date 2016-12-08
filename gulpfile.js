@@ -51,7 +51,7 @@ const BROWSER_SYNC_RELOAD_DELAY = 2000;
 
 //gulp jshint code testing
 gulp.task('lint', () => {
-  return gulp.src(['./src/js/Inverted-index.js', './src/js/Utils.js', './src/js/app.js'])
+  return gulp.src(['./src/js/*.js','./src/jasmine/spec/inverted-index-test.js'])
     .pipe(eslint())
     .pipe(eslint.format());
 });

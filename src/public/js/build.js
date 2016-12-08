@@ -11,16 +11,16 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var InvertedIndexHelper = function () {
-  function InvertedIndexHelper() {
-    _classCallCheck(this, InvertedIndexHelper);
+var InvertedIndexUtility = function () {
+  function InvertedIndexUtility() {
+    _classCallCheck(this, InvertedIndexUtility);
   }
 
-  _createClass(InvertedIndexHelper, null, [{
+  _createClass(InvertedIndexUtility, null, [{
     key: 'unique',
 
     /** remove array duplicates.
-    * @param {array} arr - The array to be filtered.
+    * @param {array} array - The array to be filtered.
     * @returns {array} The filtered array.
     */
     value: function unique(array) {
@@ -204,10 +204,10 @@ var InvertedIndexHelper = function () {
     }
   }]);
 
-  return InvertedIndexHelper;
+  return InvertedIndexUtility;
 }();
 
-module.exports = InvertedIndexHelper;
+module.exports = InvertedIndexUtility;
 
 },{}],2:[function(require,module,exports){
 'use strict';
@@ -351,7 +351,6 @@ var uploadDone = document.getElementById('upload-done');
 var uploadFailed = document.getElementById('upload-failed');
 var cheating = document.getElementById('cheating');
 
-// our inverted index controller
 function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $document, $timeout) {
   /* eslint-disable no-param-reassign */
   /* eslint-disable no-shadow */

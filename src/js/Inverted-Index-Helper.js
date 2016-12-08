@@ -3,9 +3,9 @@
 /**
 * Helper Class for creating an inverted index.
 */
-class InvertedIndexHelper {
+class InvertedIndexUtility {
   /** remove array duplicates.
-  * @param {array} arr - The array to be filtered.
+  * @param {array} array - The array to be filtered.
   * @returns {array} The filtered array.
   */
   static unique(array) {
@@ -164,4 +164,4 @@ class InvertedIndexHelper {
   }
 }
 
-module.exports = InvertedIndexHelper ;
+module.exports = InvertedIndexUtility ;

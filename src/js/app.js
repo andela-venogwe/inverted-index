@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+/* eslint-disable require-jsdoc */
 
 const InvertedIndex = require('./Inverted-index.js');
 
-const Utility = require('./Inverted-Index-Helper.js');
+const Utility = require('./Inverted-Index-Utility.js');
 
 const app = angular.module('Index', ['ngMaterial', 'ngMdIcons']);
 
@@ -18,7 +19,6 @@ const uploadDone = document.getElementById('upload-done');
 const uploadFailed = document.getElementById('upload-failed');
 const cheating = document.getElementById('cheating');
 
-// our inverted index controller
 function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $document, $timeout) {
   /* eslint-disable no-param-reassign */
   /* eslint-disable no-shadow */
