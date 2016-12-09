@@ -3,13 +3,9 @@
 /* eslint-disable no-undef */
 /* eslint-disable require-jsdoc */
 
-const InvertedIndex = require('./Inverted-index.js');
-
-const Utility = require('./Inverted-Index-Utility.js');
-
 const app = angular.module('Index', ['ngMaterial', 'ngMdIcons']);
 
-const appIndex = new InvertedIndex(Utility);
+const appIndex = new InvertedIndex(InvertedIndexUtility);
 
 const uploaded = [];
 const fileNames = [];
@@ -212,7 +208,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
 
   // create index function
   function createIndex(b) {
-    const documentName = Utility.formatFileName(b);
+    const documentName = InvertedIndexUtility.formatFileName(b);
     appIndex.createIndex(b).then((data) => {
       if (data === undefined) {
         showMessage('Invalid Json File!');

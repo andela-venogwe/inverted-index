@@ -15,4 +15,4 @@ exclude_paths:
 - node_modules/**/*
 - spec/**/**
 - src/jasmine/**
-- "src/js/app.js"
+- src/js/app.js

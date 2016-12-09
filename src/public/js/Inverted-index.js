@@ -26,7 +26,7 @@ class InvertedIndex {
     /* eslint-disable no-unused-vars */
     /* eslint-disable consistent-return */
     return new Promise((resolve, reject) => {
-      this.utility.getJSON(url, (data) => {
+      this.utility.readFile(url, (data) => {
         resolve(data.response);
       });
     }).then((jsonObject) => {
@@ -97,4 +97,4 @@ class InvertedIndex {
   }
 }
 
-module.exports = InvertedIndex;
+//module.exports = InvertedIndex;

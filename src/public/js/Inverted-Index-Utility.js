@@ -29,7 +29,7 @@ class InvertedIndexUtility {
   * takes in the responseData parameter as argument.
   * @returns {function} The callback value.
   */
-  static getJSON(url, callback) {
+  static readFile(url, callback) {
     /* eslint-disable no-undef */
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
@@ -164,4 +164,4 @@ class InvertedIndexUtility {
   }
 }
 
-module.exports = InvertedIndexUtility ;
+//module.exports = InvertedIndexUtility;
