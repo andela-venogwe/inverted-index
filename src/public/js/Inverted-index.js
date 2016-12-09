@@ -5,8 +5,9 @@
  */
 class InvertedIndex {
   /**
-  * Instantiate an inverted index object.
-  * @param {object} utility - The InvertedIndexUtility class.
+  *  class constructor
+  *  @constructor
+  *  @param {object} utility - The InvertedIndexUtility class.
   */
   constructor(utility) {
     this.utility = utility;
