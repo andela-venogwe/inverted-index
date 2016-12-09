@@ -6,7 +6,7 @@
 class InvertedIndex {
   /**
   * Instantiate an inverted index object.
-  * @param {object} utility - The InvertedIndexHelper class.
+  * @param {object} utility - The InvertedIndexUtility class.
   */
   constructor(utility) {
     this.utility = utility;
@@ -96,5 +96,3 @@ class InvertedIndex {
     return { 'Please enter search query and select index to search': '' };
   }
 }
-
-//module.exports = InvertedIndex;

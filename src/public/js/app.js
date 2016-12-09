@@ -209,34 +209,51 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
   // create index function
   function createIndex(b) {
     const documentName = InvertedIndexUtility.formatFileName(b);
-    appIndex.createIndex(b).then((data) => {
-      if (data === undefined) {
-        showMessage('Invalid Json File!');
-        $scope.title = 'Invalid Json File!';
-        $scope.headers = [];
-        $scope.words = {};
-        $timeout(() => {
-          document.getElementById('indextitle').style.display = 'none';
-          document.getElementById('badfile').style.display = 'block';
-          document.getElementById('indexresults').style.display = 'none';
-        }, 10);
-        document.getElementById(`${documentName}Create`).innerHTML = 'INVALID FILE';
-      } else {
-        showMessage('Index Has Been Populated!');
-        $scope.title = documentName;
-        $scope.headers = Object.keys(appIndex.documentFiles[documentName]);
-        $scope.words = appIndex.reference[documentName];
-        if ($scope.currentDocuments.indexOf(documentName) === -1) {
-          $scope.currentDocuments.push(documentName);
+    if ($scope.currentDocuments.indexOf(documentName) === -1) {
+      appIndex.createIndex(b).then((data) => {
+        if (data === undefined) {
+          showMessage('Invalid Json File!');
+          $scope.title = 'Invalid Json File!';
+          $scope.headers = [];
+          $scope.words = {};
+          $timeout(() => {
+            document.getElementById('indextitle').style.display = 'none';
+            document.getElementById('badfile').style.display = 'block';
+            document.getElementById('indexresults').style.display = 'none';
+          }, 10);
+          document.getElementById(`${documentName}Create`).innerHTML = 'INVALID FILE';
+        } else {
+          showMessage('Index Has Been Created!');
+          $scope.title = documentName;
+          $scope.headers = Object.keys(appIndex.documentFiles[documentName]);
+          $scope.words = appIndex.reference[documentName];
+          if ($scope.currentDocuments.indexOf(documentName) === -1) {
+            $scope.currentDocuments.push(documentName);
+          }
+          $timeout(() => {
+            document.getElementById('badfile').style.display = 'none';
+            document.getElementById('indextitle').style.display = 'block';
+            document.getElementById('indexresults').style.display = 'block';
+          }, 10);
+          document.getElementById(`${documentName}Create`).innerHTML = 'GET INDEX';
         }
-        $timeout(() => {
-          document.getElementById('badfile').style.display = 'none';
-          document.getElementById('indextitle').style.display = 'block';
-          document.getElementById('indexresults').style.display = 'block';
-        }, 10);
-        document.getElementById(`${documentName}Create`).innerHTML = 'GET INDEX';
+      });
+    }
+    else {
+      showMessage('Index Has Been Populated!');
+      $scope.title = documentName;
+      $scope.headers = Object.keys(appIndex.documentFiles[documentName]);
+      $scope.words = appIndex.reference[documentName];
+      if ($scope.currentDocuments.indexOf(documentName) === -1) {
+        $scope.currentDocuments.push(documentName);
       }
-    });
+      $timeout(() => {
+        document.getElementById('badfile').style.display = 'none';
+        document.getElementById('indextitle').style.display = 'block';
+        document.getElementById('indexresults').style.display = 'block';
+      }, 10);
+      document.getElementById(`${documentName}Create`).innerHTML = 'GET INDEX';
+    }
   }
 
   // search index function

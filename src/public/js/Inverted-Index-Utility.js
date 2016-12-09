@@ -47,7 +47,7 @@ class InvertedIndexUtility {
   }
 
   /**
-  * check if object is a valid json file.
+  * check if object is a valid json object.
   * @param {object} jsonObject - The JSON file content.
   * @returns {boolean} ans - The check for jsonObject validity.
   */
@@ -97,7 +97,7 @@ class InvertedIndexUtility {
   }
 
   /**
-  * save file and sort docs in json.
+  * save file and sort documents in json.
   * @param {object} jsonObject - a json object.
   * @returns {object} an object containing he saved tokens and jsonObject.
   */
@@ -163,5 +163,3 @@ class InvertedIndexUtility {
     .filter(item => /\S/gi.test(item));
   }
 }
-
-//module.exports = InvertedIndexUtility;
