@@ -107,7 +107,9 @@ gulp.task('css', () => {
 
 // gulp default tasks
 gulp.task('default', ['nodemon', 'browser-sync', 'browser-sync-jasmine'], () => {
-  gulp.watch(['src/jasmine/spec/*.js'], browserSyncJasmine.reload);
+  gulp.watch(['src/public/js/Inverted-index.js',
+   'src/jasmine/spec/*.js', 'src/public/Invertd-Index-Utility.js'], 
+   browserSyncJasmine.reload);
   gulp.watch(['src/sass/*.scss', 'src/public/**/*.css'], ['css']);
   gulp.watch(['src/views/*.jade', 'src/public/js/*.js'], ['bs-reload']);
 });
