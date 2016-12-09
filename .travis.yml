@@ -10,6 +10,4 @@ node_js:
 before_script:
   - npm install -g gulp
 
-script: gulp jasmine
-
-after_success: 'npm run coveralls'
+script: node_modules/karma/bin/karma start --single-run
