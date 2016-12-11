@@ -19,7 +19,7 @@ class InvertedIndexUtility {
         return null;
       });
     }
-    return [];
+    return ['invalid data type supplied'];
   }
 
   /**
@@ -34,14 +34,13 @@ class InvertedIndexUtility {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'json';
-    xhr.onreadystatechange = function changed() {
-      if (this.readyState === XMLHttpRequest.DONE) {
-        if (this.status === 200) {
-          return callback(this);
-        }
+    this.changed = function changed() {
+      if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+        return callback(this);
       }
       return this.statusText;
     };
+    xhr.onreadystatechange = this.changed;
     xhr.onerror = xhr.statusText;
     xhr.send();
   }
@@ -52,32 +51,29 @@ class InvertedIndexUtility {
   * @returns {boolean} ans - The check for jsonObject validity.
   */
   static isValidJson(jsonObject) {
-    let jsonObjectKeys = null;
-    let jsonObjectLength = null;
     try {
-      jsonObjectKeys = Object.keys(jsonObject);
-      jsonObjectLength = jsonObjectKeys.length;
+      Object.keys(jsonObject);
     } catch (error) {
       return false;
     }
     let count = 0;
-    let ans = true;
-    if (jsonObjectLength > 0) {
-      while (count < jsonObjectLength) {
+    if (Object.keys(jsonObject).length > 0) {
+      while (count < Object.keys(jsonObject).length) {
         const hasValidTitle = jsonObject[count].title !== undefined &&
         jsonObject[count].title.length > 0 && typeof jsonObject[count].title === 'string';
         const hasValidText = jsonObject[count].text !== undefined &&
         jsonObject[count].text.length > 0 && typeof jsonObject[count].text === 'string';
         if (!(hasValidTitle && hasValidText)) {
-          ans = false;
-          return ans;
+          return false;
         }
-        count += 1;
+        else {
+          count += 1;
+        } 
       }
+      return true;
     } else {
-      ans = false;
+      return false;
     }
-    return ans;
   }
 
   /**
@@ -92,62 +88,8 @@ class InvertedIndexUtility {
       .toString()
       .slice(1);
     } catch (error) {
-      throw error;
+      return 'bad input';
     }
-  }
-
-  /**
-  * save file and sort documents in json.
-  * @param {object} jsonObject - a json object.
-  * @returns {object} an object containing he saved tokens and jsonObject.
-  */
-  static saveTokens(jsonObject) {
-    try {
-      const tokens = {};
-      let words = [];
-      jsonObject.forEach((documentObject, index) => {
-        let token = '';
-        token = `${documentObject.title} ${documentObject.text}`;
-        const uniqueTokens = this.unique(token.toLowerCase().match(/\w+/g)
-        .sort());
-        tokens[index] = uniqueTokens;
-        words = words.concat(uniqueTokens);
-      });
-      return { tokens, jsonObject, words };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
-  * populate the object reference and document attribute.
-  * @param {object} jsonObject - the jsonObject.
-  * @param {object} parent - the current (this) object.
-  * @param {string} theDocument - the current file name.
-  * @returns {object} The file indexes.
-  */
-  static populateReference(jsonObject, parent, theDocument) {
-    /* eslint-disable no-param-reassign */
-    /* eslint-disable no-unused-expression */
-    const jsonObjectKeys = Object.keys(jsonObject);
-    const jsonObjectKeysLength = jsonObjectKeys.length;
-    let index = 0;
-    parent.reference[theDocument] = {};
-    const tokenIndex = () => {
-      jsonObject[index].forEach((word) => {
-        /* eslint-disable no-unused-expressions */
-        parent.reference[theDocument][word] !== undefined ?
-        (parent.reference[theDocument][word].push(index)) :
-        (parent.reference[theDocument][word] = [],
-          parent.reference[theDocument][word].push(index));
-      });
-      index += 1;
-    };
-    while (index < jsonObjectKeysLength) {
-      tokenIndex();
-    }
-    parent.documentFiles[theDocument] = jsonObject;
-    return parent.reference[theDocument];
   }
 
   /** filter text input

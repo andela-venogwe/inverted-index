@@ -18,6 +18,55 @@ class InvertedIndex {
     this.allWords = [];
   }
 
+  /*
+  * Save Tokens
+  */
+  saveTokens(jsonObject) {
+    const tokens = {};
+    let words = [];
+    jsonObject.forEach((documentObject, index) => {
+      let token = '';
+      token = `${documentObject.title} ${documentObject.text}`;
+      const uniqueTokens = this.utility.unique(token.toLowerCase().match(/\w+/g)
+      .sort());
+      tokens[index] = uniqueTokens;
+      words = words.concat(uniqueTokens);
+    });
+    console.log(tokens)
+    return { tokens, jsonObject, words };
+  }
+
+  /**
+  * populate the object reference and document attribute.
+  * @param {object} jsonObject - the jsonObject.
+  * @param {object} parent - the current (this) object.
+  * @param {string} theDocument - the current file name.
+  * @returns {object} The file indexes.
+  */
+  populateReference(jsonObject, theDocument) {
+    /* eslint-disable no-param-reassign */
+    /* eslint-disable no-unused-expression */
+    const jsonObjectKeys = Object.keys(jsonObject);
+    const jsonObjectKeysLength = jsonObjectKeys.length;
+    let index = 0;
+    this.reference[theDocument] = {};
+    const tokenIndex = () => {
+      jsonObject[index].forEach((word) => {
+        /* eslint-disable no-unused-expressions */
+        this.reference[theDocument][word] !== undefined ?
+        (this.reference[theDocument][word].push(index)) :
+        (this.reference[theDocument][word] = [],
+          this.reference[theDocument][word].push(index));
+      });
+      index += 1;
+    };
+    while (index < jsonObjectKeysLength) {
+      tokenIndex();
+    }
+    this.documentFiles[theDocument] = jsonObject;
+    return this.reference[theDocument];
+  }
+
   /**
   * Create an inverted index from file
   * @param {string} url - The json file url.
@@ -33,10 +82,10 @@ class InvertedIndex {
     }).then((jsonObject) => {
       try {
         if (this.utility.isValidJson(jsonObject)) {
-          const savedTokens = this.utility.saveTokens(jsonObject);
+          const savedTokens = this.saveTokens(jsonObject);
           const documentName = this.utility.formatFileName(url);
           this.currentFile = jsonObject;
-          this.utility.populateReference(savedTokens.tokens, this, documentName);
+          this.populateReference(savedTokens.tokens, documentName);
           this.currentDocuments.push(documentName);
           this.allWords = this.utility.unique(this.allWords.concat(savedTokens.words));
           return this.reference[documentName];

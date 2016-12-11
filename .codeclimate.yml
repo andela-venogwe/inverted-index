@@ -13,6 +13,5 @@ ratings:
   - "**.js"
 exclude_paths:
 - node_modules/**/*
-- spec/**/**
-- src/jasmine/**
-- src/js/app.js
+- jasmine/**
+- src/public/js/app.js

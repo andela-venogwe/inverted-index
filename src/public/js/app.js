@@ -221,7 +221,11 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
             document.getElementById('badfile').style.display = 'block';
             document.getElementById('indexresults').style.display = 'none';
           }, 10);
-          document.getElementById(`${documentName}Create`).innerHTML = 'INVALID FILE';
+          try {
+            document.getElementById(`${documentName}Create`).innerHTML = 'INVALID FILE';
+          } catch (error) {
+            return 'invalid json';
+          }
         } else {
           showMessage('Index Has Been Created!');
           $scope.title = documentName;

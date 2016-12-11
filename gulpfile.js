@@ -30,7 +30,7 @@ const BROWSER_SYNC_RELOAD_DELAY = 2000;
 
 //gulp jshint code testing
 gulp.task('lint', () => {
-  return gulp.src(['./src/public/js/*.js','./src/jasmine/spec/*.js'])
+  return gulp.src(['./src/public/js/*.js','./jasmine/spec/*.js'])
     .pipe(eslint())
     .pipe(eslint.format());
 });
@@ -85,7 +85,7 @@ gulp.task('browser-sync-jasmine', () => {
     browser: browser,
     server: {
       baseDir: "./",
-      index: "src/jasmine/SpecRunner.html"
+      index: "jasmine/SpecRunner.html"
     },
     port: 9000,
     ui: {
@@ -108,7 +108,7 @@ gulp.task('css', () => {
 // gulp default tasks
 gulp.task('default', ['nodemon', 'browser-sync', 'browser-sync-jasmine'], () => {
   gulp.watch(['src/public/js/Inverted-index.js',
-   'src/jasmine/spec/*.js', 'src/public/Invertd-Index-Utility.js'], 
+   'jasmine/spec/*.js', 'src/public/Invertd-Index-Utility.js'], 
    browserSyncJasmine.reload);
   gulp.watch(['src/sass/*.scss', 'src/public/**/*.css'], ['css']);
   gulp.watch(['src/views/*.jade', 'src/public/js/*.js'], ['bs-reload']);
