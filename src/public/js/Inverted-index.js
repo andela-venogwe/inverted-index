@@ -32,7 +32,6 @@ class InvertedIndex {
       tokens[index] = uniqueTokens;
       words = words.concat(uniqueTokens);
     });
-    console.log(tokens)
     return { tokens, jsonObject, words };
   }
 
@@ -46,8 +45,6 @@ class InvertedIndex {
   populateReference(jsonObject, theDocument) {
     /* eslint-disable no-param-reassign */
     /* eslint-disable no-unused-expression */
-    const jsonObjectKeys = Object.keys(jsonObject);
-    const jsonObjectKeysLength = jsonObjectKeys.length;
     let index = 0;
     this.reference[theDocument] = {};
     const tokenIndex = () => {
@@ -60,7 +57,7 @@ class InvertedIndex {
       });
       index += 1;
     };
-    while (index < jsonObjectKeysLength) {
+    while (index < Object.keys(jsonObject).length) {
       tokenIndex();
     }
     this.documentFiles[theDocument] = jsonObject;
@@ -91,7 +88,7 @@ class InvertedIndex {
           return this.reference[documentName];
         }
       } catch (error) {
-        throw error;
+        return error;
       }
     });
   }
@@ -140,8 +137,7 @@ class InvertedIndex {
       });
       if (Object.keys(this.searchReturn).length < 1) {
         return { 'No results found : please refine your search query': '' };
-      }
-      return this.searchReturn;
+      } else { return this.searchReturn; }
     }
     return { 'Please enter search query and select index to search': '' };
   }

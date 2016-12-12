@@ -18,6 +18,7 @@ describe('Read book data', () => {
   });
 
   it('Should return a valid JSON array', () => {
+    expect(typeof index.createIndex).toBe('function');
     expect(typeof index.utility.readFile).toBe('function');
     expect(typeof index.utility.changed).toBe('function');
     expect(typeof index.utility.changed()).toBe('undefined');
@@ -31,7 +32,7 @@ describe('Read book data', () => {
   it('Should return a non empty JSON array', () => {
     expect(fileContents.length > 1).toBe(true);
   });
-
+  
   it('Should remove duplicates from array', () => {
     const duplicate = ['a', 'b', 'c', 'd', 'e', 'a', 'b', 'c', 'd', 'e'];
     expect(InvertedIndexUtility.unique(duplicate))
@@ -101,8 +102,9 @@ describe('Populate Index', () => {
     const jsoncontent2 = [ 'alice', 'fall', 'imagination' ]
     it('Should create the index once the JSON file has been read', () => {
       expect(typeof index.reference['books.json']).toEqual('object');
-      expect(typeof index.populateReference(jsoncontent2, 'books1.json'))
-      .toEqual('object'); 
+      expect(typeof index.populateReference).toEqual('function'); 
+      expect(index.populateReference({"0":["a","alice","and"]}, 'books2.json'))
+      .toEqual({ a: [ 0 ], alice: [ 0 ], and: [ 0 ] }); 
     });
 
     it('Should create an accurate index object', () => {
@@ -160,6 +162,20 @@ describe('Search Index', () => {
         the: [1],
         rings: [1]
       });
+      expect(index.searchIndex('lord of', 
+        ['books.json']))
+      .toEqual({ "books.json": { lord: [ 1 ], of: [ 0, 1 ] } });
+      expect(index.searchIndex('lord of', 
+        ['books.json'])["books.json"].lord)
+      .toEqual([ 1 ]);
+    });
+
+    it('Should return correct search results for invalid queries', () => {
+      expect(index.searchIndex('middleware', 
+        ['books.json']))
+      .toEqual({ 'No results found : please refine your search query': '' });
+      expect(index.searchIndex())
+      .toEqual({ 'Please enter search query and select index to search': '' });
     });
   });
 
