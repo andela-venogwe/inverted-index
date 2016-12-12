@@ -101,7 +101,6 @@ describe('Populate Index', () => {
         "text": "fall imagination."
       },
     ];
-    const jsoncontent2 = [ 'alice', 'fall', 'imagination' ]
     it('Should create the index once the JSON file has been read', () => {
       expect(typeof index.reference['books.json']).toEqual('object');
       expect(typeof index.populateReference).toEqual('function'); 
