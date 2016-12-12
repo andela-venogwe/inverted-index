@@ -32,20 +32,15 @@ module.exports = function(config) {
       './src/public/js/*.js': ['coverage'],
     },
 
-    // // Which plugins to enable
-    // plugins: [
-    //   'karma-chrome-launcher',
-    //   'karma-coverage',
-    //   'karma-coveralls',
-    //   'karma-jasmine',
-    //   'karma-spec-reporter',
-    //   'karma-verbose-reporter',
-    // ],
-
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['spec', 'coverage', 'coveralls', 'verbose'],
+
+    coverageReporter: {
+      type: 'lcov',
+      dir: 'coverage/'
+    },
 
     // web server port
     port: 9876,

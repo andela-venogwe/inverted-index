@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/andela-venogwe/inverted-index.svg?branch=develop)](https://travis-ci.org/andela-venogwe/inverted-index) [![Coverage Status](https://coveralls.io/repos/github/andela-venogwe/inverted-index/badge.svg?branch=develop)](https://coveralls.io/github/andela-venogwe/inverted-index?branch=develop)
+[![Build Status](https://travis-ci.org/andela-venogwe/inverted-index.svg?branch=develop)](https://travis-ci.org/andela-venogwe/inverted-index) [![Coverage Status](https://coveralls.io/repos/github/andela-venogwe/inverted-index/badge.svg?branch=develop)](https://coveralls.io/github/andela-venogwe/inverted-index?branch=pair-programming)
 
 # inverted-index
 Inverted index takes a JSON array of text objects and creates an index from the array. The index allows a user to search for text blocks in the array that contain a specified collection of words.
