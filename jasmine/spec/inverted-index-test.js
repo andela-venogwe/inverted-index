@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint-disable no-unsed-vars */
+/* eslint-disable no-undef */
 const index = new InvertedIndex(InvertedIndexUtility);
 
 describe('Read book data', () => {
