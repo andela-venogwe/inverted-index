@@ -1,0 +1,7 @@
+{
+  "name": "Inverted Index Generated",
+  "description": "An app to generate and search inverted indexes from json files",
+  "repository": "https://github.com/andela-venogwe/inverted-index",
+  "logo": "http://www.algarexperience.com/static/images/favicon/favicon-192x192.png",
+  "keywords": ["node", "express", "static", "inverted index"]
+}
