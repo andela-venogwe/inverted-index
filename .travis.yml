@@ -1,9 +1,16 @@
+sudo: required
+dist: trusty
 language: node_js
 
 node_js:
   - "6"
 
-before_script:
-  - npm install -g gulp
+before_install:
+  - export CHROME_BIN=google-chrome
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
 
-script: gulp jasmine
+before_script:
+  - npm install
+
+script: npm test

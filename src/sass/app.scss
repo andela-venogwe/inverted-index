@@ -20,6 +20,14 @@ md-toolbar {
   }
 }
 
+md-input-container {
+  .md-errors-spacer {
+    .md-char-counter {
+      margin-top: -25px;
+    } 
+  }
+}
+
 md-sidenav {
   min-width: 350px !important;
   width: 85vw !important;
