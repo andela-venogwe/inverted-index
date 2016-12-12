@@ -18,8 +18,10 @@ class InvertedIndex {
     this.allWords = [];
   }
 
-  /*
+  /**
   * Save Tokens
+  * @param {object} jsonObject - the jsonObject.
+  * @returns {object} an object with the tokens jsonObject and words.
   */
   saveTokens(jsonObject) {
     const tokens = {};
@@ -36,9 +38,8 @@ class InvertedIndex {
   }
 
   /**
-  * populate the object reference and document attribute.
+  * populateReference to populate the reference and document attribute.
   * @param {object} jsonObject - the jsonObject.
-  * @param {object} parent - the current (this) object.
   * @param {string} theDocument - the current file name.
   * @returns {object} The file indexes.
   */
