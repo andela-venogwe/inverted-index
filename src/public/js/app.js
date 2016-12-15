@@ -211,6 +211,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
     const documentName = InvertedIndexUtility.formatFileName(b);
     if ($scope.currentDocuments.indexOf(documentName) === -1) {
       appIndex.createIndex(b).then((data) => {
+        $scope.everyDocument = appIndex.allUnsortedDocuments[documentName];
         if (data === undefined) {
           showMessage('Invalid Json File!');
           $scope.title = 'Invalid Json File!';
@@ -226,6 +227,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
           } catch (error) {
             return 'invalid json';
           }
+
         } else {
           showMessage('Index Has Been Created!');
           $scope.title = documentName;

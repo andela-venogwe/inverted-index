@@ -95,7 +95,7 @@ block content
                     thead
                       tr
                         td.marker Words
-                        td.marker(ng-repeat="item in headers") Document_{{item}}
+                        td.marker(ng-repeat="item in headers") {{everyDocument[item].title}}
                     tr(ng-repeat="(key, value) in words")
                       td.marker {{key}}
                       td.marker(ng-repeat="item in headers")
@@ -112,7 +112,7 @@ block content
                     thead
                       tr
                         td.marker#searchhead Words
-                        td.marker(ng-repeat="(t, item) in uploadedFileContents[k]") Document_{{t}}
+                        td.marker(ng-repeat="(t, item) in uploadedFileContents[k]") {{everyDocument[t].title}}
                       tr(ng-repeat="(key, value) in v")
                         td.marker {{key}}
                         td.marker(ng-repeat="(t, item) in uploadedFileContents[k]")

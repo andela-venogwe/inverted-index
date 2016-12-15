@@ -16,6 +16,7 @@ class InvertedIndex {
     this.currentFile = [];
     this.currentDocuments = [];
     this.allWords = [];
+    this.allUnsortedDocuments = {};
   }
 
   /**
@@ -85,6 +86,7 @@ class InvertedIndex {
           this.currentFile = jsonObject;
           this.populateReference(savedTokens.tokens, documentName);
           this.currentDocuments.push(documentName);
+          this.allUnsortedDocuments[documentName] = jsonObject;
           this.allWords = this.utility.unique(this.allWords.concat(savedTokens.words));
           return this.reference[documentName];
         }
