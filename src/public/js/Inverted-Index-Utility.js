@@ -58,17 +58,21 @@ class InvertedIndexUtility {
     }
     let count = 0;
     if (Object.keys(jsonObject).length > 0) {
-      while (count < Object.keys(jsonObject).length) {
-        const hasValidTitle = jsonObject[count].title !== undefined &&
-        jsonObject[count].title.length > 0 && typeof jsonObject[count].title === 'string';
-        const hasValidText = jsonObject[count].text !== undefined &&
-        jsonObject[count].text.length > 0 && typeof jsonObject[count].text === 'string';
-        if (!(hasValidTitle && hasValidText)) {
-          return false;
+      try {
+        while (count < Object.keys(jsonObject).length) {
+          const hasValidTitle = jsonObject[count].title !== undefined &&
+          jsonObject[count].title.length > 0 && typeof jsonObject[count].title === 'string';
+          const hasValidText = jsonObject[count].text !== undefined &&
+          jsonObject[count].text.length > 0 && typeof jsonObject[count].text === 'string';
+          if (!(hasValidTitle && hasValidText)) {
+            return false;
+          }
+          else {
+            count += 1;
+          } 
         }
-        else {
-          count += 1;
-        } 
+      } catch(error) {
+        return false;
       }
       return true;
     } else {
