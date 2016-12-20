@@ -5,7 +5,7 @@
 
 const app = angular.module('Index', ['ngMaterial', 'ngMdIcons']);
 
-const appIndex = new InvertedIndex(InvertedIndexUtility);
+const appIndex = new InvertedIndex();
 
 const uploaded = [];
 const fileNames = [];
@@ -103,16 +103,14 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
         let color = '';
         let message = '';
         item.endsWith('.json') ?
-        (fileSize > 0 ?
-          (color = 'good', message = 'valid file type')
-           :
-          (color = 'bad', message = 'empty json file')
-        ) :
-        (fileSize > 0 ?
-          (color = 'bad', message = 'invalid file type')
-          :
-          (color = 'bad', message = 'empty invalid file type')
-        );
+          (fileSize > 0 ?
+            (color = 'good', message = 'valid file type') :
+            (color = 'bad', message = 'empty json file')
+          ) :
+          (fileSize > 0 ?
+            (color = 'bad', message = 'invalid file type') :
+            (color = 'bad', message = 'empty invalid file type')
+          );
         validity.push(message);
         selectArea.innerHTML += `<md-list-item><p> ${item} 
         <span class="message ${color}"> ${message}</span></p></md-list-item>`;
@@ -200,7 +198,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
 
   // show message on create index or get index
   const showMessage = (message) => {
-    $mdToast.show( $mdToast.simple()
+    $mdToast.show($mdToast.simple()
       .textContent(message)
       .position('left')
       .hideDelay(3000));
@@ -245,8 +243,7 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
           document.getElementById(`${documentName}Create`).innerHTML = 'GET INDEX';
         }
       });
-    }
-    else {
+    } else {
       showMessage('Index Has Been Populated!');
       $scope.title = documentName;
       $scope.headers = Object.keys(appIndex.documentFiles[documentName]);
@@ -300,13 +297,13 @@ function themeMaterial($mdThemingProvider) {
   });
   $mdThemingProvider.definePalette('customBlue', customBlueMap);
   $mdThemingProvider.theme('default')
-  .primaryPalette('customBlue', {
-    default: '500',
-    'hue-1': '50',
-  })
-  .accentPalette('pink');
+    .primaryPalette('customBlue', {
+      default: '500',
+      'hue-1': '50',
+    })
+    .accentPalette('pink');
   $mdThemingProvider.theme('input', 'default')
-  .primaryPalette('grey');
+    .primaryPalette('grey');
 }
 
 app.config(themeMaterial);
