@@ -23,7 +23,7 @@ const nodejsPort = Math.floor((Math.random() * 1000) + 3000);
 
 const browser = os.platform() === 'linux' ? 'google-chrome' : (
   os.platform() === 'darwin' ? 'google chrome' : (
-  os.platform() === 'win32' ? 'chrome' : 'firefox')
+    os.platform() === 'win32' ? 'chrome' : 'firefox')
 );
 
 // we'd need a slight delay to reload browsers
@@ -32,7 +32,9 @@ const BROWSER_SYNC_RELOAD_DELAY = 2000;
 
 //gulp jshint code testing
 gulp.task('lint', () => {
-  return gulp.src(['./src/public/js/*.js','./jasmine/spec/*.js'])
+  return gulp.src(['./src/public/js/*.js',
+      './jasmine/spec/*.js', '!./src/public/app.js'
+    ])
     .pipe(eslint())
     .pipe(eslint.format());
 });
@@ -41,30 +43,30 @@ gulp.task('lint', () => {
 gulp.task('nodemon', (cb) => {
   let started = false;
   return nodemon({
-    script: './bin/www',
-    watch: ['app.js', 'gulpfile.js'],
-    env: {'PORT': nodejsPort, 'NODE_ENV': 'development' }
-  })
-  .on('start', function () {
-    //have nodemon run watch on start
-    // to avoid nodemon being started multiple times
-    // thanks @matthisk
-    if (!started) {
-      cb();
-      started = true; 
-    } 
-  })
-  .on('restart', function onRestart() {
-    // reload connected browsers after a slight delay
-    setTimeout(function reload() {
-      browserSyncNode.reload({
-        stream: false
-      });
-      browserSyncJasmine.reload({
-        stream: false
-      });
-    }, BROWSER_SYNC_RELOAD_DELAY);
-  });
+      script: './bin/www',
+      watch: ['app.js', 'gulpfile.js'],
+      env: { 'PORT': nodejsPort, 'NODE_ENV': 'development' }
+    })
+    .on('start', function () {
+      //have nodemon run watch on start
+      // to avoid nodemon being started multiple times
+      // thanks @matthisk
+      if (!started) {
+        cb();
+        started = true;
+      }
+    })
+    .on('restart', function onRestart() {
+      // reload connected browsers after a slight delay
+      setTimeout(function reload() {
+        browserSyncNode.reload({
+          stream: false
+        });
+        browserSyncJasmine.reload({
+          stream: false
+        });
+      }, BROWSER_SYNC_RELOAD_DELAY);
+    });
 });
 
 // run browsersync after nodemon runs
@@ -110,8 +112,9 @@ gulp.task('css', () => {
 // gulp default tasks
 gulp.task('default', ['nodemon', 'browser-sync', 'browser-sync-jasmine'], () => {
   gulp.watch(['src/public/js/Inverted-index.js',
-   'jasmine/spec/*.js', 'src/public/Invertd-Index-Utility.js'], 
-   browserSyncJasmine.reload);
+      'jasmine/spec/*.js', 'src/public/Invertd-Index-Utility.js'
+    ],
+    browserSyncJasmine.reload);
   gulp.watch(['src/sass/*.scss', 'src/public/**/*.css'], ['css']);
   gulp.watch(['src/views/*.jade', 'src/public/js/*.js'], ['bs-reload']);
 });

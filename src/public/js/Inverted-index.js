@@ -28,7 +28,8 @@ class InvertedIndex {
     jsonObject.forEach((documentObject, index) => {
       let token = '';
       token = `${documentObject.title} ${documentObject.text}`;
-      const uniqueTokens = InvertedIndexUtility.unique(token.toLowerCase().match(/\w+/g)
+      const uniqueTokens = InvertedIndexUtility
+      .unique(token.toLowerCase().match(/\w+/g)
         .sort());
       tokens[index] = uniqueTokens;
       words = words.concat(uniqueTokens);
@@ -80,7 +81,8 @@ class InvertedIndex {
           this.populateReference(savedTokens.tokens, documentName);
           this.currentDocuments.push(documentName);
           this.allUnsortedDocuments[documentName] = jsonObject;
-          this.allWords = InvertedIndexUtility.unique(this.allWords.concat(savedTokens.words));
+          this.allWords = InvertedIndexUtility
+          .unique(this.allWords.concat(savedTokens.words));
           return this.reference[documentName];
         }
       } catch (error) {
@@ -102,7 +104,7 @@ class InvertedIndex {
   /**
    * Search the inverted index.
    * @param {string} value - The current search query.
-   * @param {array} documentNames - an array of current files to searxh.
+   * @param {array} documentNames - an array of current files to search.
    * @returns {object} An object with the accurate search results.
    */
   searchIndex(value, documentNames) {

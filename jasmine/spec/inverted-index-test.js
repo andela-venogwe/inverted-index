@@ -22,7 +22,8 @@ describe('Read book data', () => {
     expect(typeof InvertedIndexUtility.readFile).toBe('function');
     expect(typeof InvertedIndexUtility.changed).toBe('function');
     expect(typeof InvertedIndexUtility.changed()).toBe('undefined');
-    expect(InvertedIndexUtility.readFile('./src/public/uploads/books.json', (data) => {
+    expect(InvertedIndexUtility
+      .readFile('./src/public/uploads/books.json', (data) => {
         return data;
       }))
       .toBe(undefined);
@@ -57,7 +58,8 @@ describe('Read book data', () => {
     let answer = true;
     let count = 0;
     while (count < fileContents.length) {
-      if (typeof fileContents[count] != 'object' || Array.isArray(fileContents[count])) {
+      if (typeof fileContents[count] != 'object' ||
+        Array.isArray(fileContents[count])) {
         answer = false;
       }
       count += 1;
@@ -65,7 +67,8 @@ describe('Read book data', () => {
     expect(answer).toBe(true);
   });
 
-  it('Should return a JSON array which has valid string entries for keys(title, text)', () => {
+  it(`Should return a JSON array which 
+    has valid string entries for keys(title, text)`, () => {
     const testJson = [{
       "title": "The Lord of the Rings: The Fellowship of the Ring."
     }];
@@ -96,7 +99,8 @@ describe('Populate Index', () => {
     it('Should create the index once the JSON file has been read', () => {
       expect(typeof index.reference['books.json']).toEqual('object');
       expect(typeof index.populateReference).toEqual('function');
-      expect(index.populateReference({ "0": ["a", "alice", "and"] }, 'books2.json'))
+      expect(index
+        .populateReference({ "0": ["a", "alice", "and"] }, 'books2.json'))
         .toEqual({ a: [0], alice: [0], and: [0] });
     });
 
@@ -113,7 +117,8 @@ describe('Populate Index', () => {
       let verdict = true;
       const indexContent = index.reference['books.json'];
       for (let value in indexContent) {
-        if (!Array.isArray(indexContent[value]) || isNaN(indexContent[value][0])) {
+        if (!Array.isArray(indexContent[value]) ||
+          isNaN(indexContent[value][0])) {
           verdict = false;
         }
       }
@@ -123,11 +128,13 @@ describe('Populate Index', () => {
     it('Should not overwrite the previously created index', () => {
       const indexBefore = index.reference['books.json'];
       const indexAfter = index.reference['tests.json'];
-      expect(typeof indexBefore == 'object' && typeof indexAfter == 'object').toBe(true);
+      expect(typeof indexBefore == 'object' &&
+        typeof indexAfter == 'object').toBe(true);
     });
 
     it('Should save tokens when called with a valid json file', () => {
-      expect(index.saveTokens(jsoncontent).tokens).toEqual({ 0: ['alice', 'fall', 'imagination'] });
+      expect(index.saveTokens(jsoncontent).tokens)
+      .toEqual({ 0: ['alice', 'fall', 'imagination'] });
     });
   });
 });
@@ -136,7 +143,8 @@ describe('Populate Index', () => {
 describe('Search Index', () => {
   describe('Search results', () => {
     it('Should return the correct result for single word searches', () => {
-      expect(typeof index.searchIndex('Lord', ['books.json'])).toEqual('object');
+      expect(typeof index.searchIndex('Lord', ['books.json']))
+      .toEqual('object');
     });
 
     it('Should filter non word search queries', () => {
@@ -146,8 +154,10 @@ describe('Search Index', () => {
       expect(theSearch).toEqual(['alliance']);
     });
 
-    it('Should return correct search results for multiple word queries', () => {
-      expect(index.searchIndex('lord of the rings', ['books.json'])['books.json']).toEqual({
+    it(`Should return correct 
+      search results for multiple word queries`, () => {
+      expect(index.searchIndex('lord of the rings',
+        ['books.json'])['books.json']).toEqual({
         lord: [1],
         of: [0, 1],
         the: [1],
@@ -163,7 +173,9 @@ describe('Search Index', () => {
       expect(index.searchIndex('middleware', ['books.json']))
         .toEqual({ 'No results found : please refine your search query': '' });
       expect(index.searchIndex())
-        .toEqual({ 'Please enter search query and select index to search': '' });
+        .toEqual({ 
+          'Please enter search query and select index to search': '' 
+        });
     });
   });
 
@@ -185,7 +197,8 @@ describe('Search Index', () => {
   });
 
   it('It should accept an array of argument', () => {
-    const result = index.searchIndex(['lord', 'of', 'the', 'rings'], ['books.json'])['books.json'];
+    const result = index
+    .searchIndex(['lord', 'of', 'the', 'rings'], ['books.json'])['books.json'];
     expect(result).toEqual({
       lord: [1],
       of: [0, 1],

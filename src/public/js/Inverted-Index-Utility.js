@@ -34,7 +34,8 @@ class InvertedIndexUtility {
     xhr.open('GET', url, true);
     xhr.responseType = 'json';
     this.changed = function changed() {
-      if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+      if (this.readyState === XMLHttpRequest
+        .DONE && this.status === 200) {
         return callback(this);
       }
       return this.statusText;
@@ -60,9 +61,11 @@ class InvertedIndexUtility {
       try {
         while (count < Object.keys(jsonObject).length) {
           const hasValidTitle = jsonObject[count].title !== undefined &&
-            jsonObject[count].title.length > 0 && typeof jsonObject[count].title === 'string';
+            jsonObject[count].title.length > 0
+            && typeof jsonObject[count].title === 'string';
           const hasValidText = jsonObject[count].text !== undefined &&
-            jsonObject[count].text.length > 0 && typeof jsonObject[count].text === 'string';
+            jsonObject[count].text.length > 0
+            && typeof jsonObject[count].text === 'string';
           if (!(hasValidTitle && hasValidText)) {
             return false;
           } else {
