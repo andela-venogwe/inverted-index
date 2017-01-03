@@ -47,7 +47,6 @@ class InvertedIndex {
     this.reference[theDocument] = {};
     const tokenIndex = () => {
       jsonObject[index].forEach((word) => {
-        /* eslint-disable no-unused-expressions */
         this.reference[theDocument][word] !== undefined ?
           (this.reference[theDocument][word].push(index)) :
           (this.reference[theDocument][word] = [],
