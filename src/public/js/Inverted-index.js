@@ -7,7 +7,6 @@ class InvertedIndex {
   /**
    *  class constructor
    *  @constructor
-   *  @param {object} utility - The InvertedIndexUtility class.
    */
   constructor() {
     this.reference = {};
