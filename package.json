@@ -32,6 +32,8 @@
   "devDependencies": {
     "browser-sync": "^2.18.1",
     "browserify": "^13.1.1",
+    "eslint-config-airbnb-base": "^11.0.0",
+    "eslint-plugin-import": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-eslint": "^3.0.1",
     "gulp-nodemon": "^2.2.1",

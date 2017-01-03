@@ -1,8 +1,3 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
-/* eslint-disable require-jsdoc */
-
 const app = angular.module('Index', ['ngMaterial', 'ngMdIcons']);
 
 const appIndex = new InvertedIndex();
@@ -209,7 +204,6 @@ function invertedIndexController($scope, $mdSidenav, $mdDialog, $mdToast, $docum
     const documentName = InvertedIndexUtility.formatFileName(b);
     if ($scope.currentDocuments.indexOf(documentName) === -1) {
       appIndex.createIndex(b).then((data) => {
-        console.log(data);
         $scope.everyDocument = appIndex.allUnsortedDocuments[documentName];
         if (data === undefined) {
           showMessage('Invalid Json File!');

@@ -1,15 +1,11 @@
-'use strict';
-
-/* eslint-disable no-unsed-vars */
-/* eslint-disable no-undef */
 const index = new InvertedIndex();
 
 describe('Read book data', () => {
-  let fileContents = undefined;
-  beforeAll(function (done) {
+  let fileContents;
+  beforeAll((done) => {
     index.createIndex('/src/public/uploads/tests.json')
       .then(() => {
-        index.createIndex('./src/public/uploads/books.json')
+        index.createIndex('/src/public/uploads/books.json')
           .then(() => {
             fileContents = index.currentFile;
             done();
@@ -23,9 +19,7 @@ describe('Read book data', () => {
     expect(typeof InvertedIndexUtility.changed).toBe('function');
     expect(typeof InvertedIndexUtility.changed()).toBe('undefined');
     expect(InvertedIndexUtility
-      .readFile('./src/public/uploads/books.json', (data) => {
-        return data;
-      }))
+      .readFile('/src/public/uploads/books.json', data => data))
       .toBe(undefined);
     expect(Array.isArray(fileContents)).toBe(true);
   });
@@ -58,7 +52,7 @@ describe('Read book data', () => {
     let answer = true;
     let count = 0;
     while (count < fileContents.length) {
-      if (typeof fileContents[count] != 'object' ||
+      if (typeof fileContents[count] !== 'object' ||
         Array.isArray(fileContents[count])) {
         answer = false;
       }
@@ -70,11 +64,11 @@ describe('Read book data', () => {
   it(`Should return a JSON array which 
     has valid string entries for keys(title, text)`, () => {
     const testJson = [{
-      "title": "The Lord of the Rings: The Fellowship of the Ring."
+      title: 'The Lord of the Rings: The Fellowship of the Ring.'
     }];
     const testJson2 = [{
-      "text": "The Lord of the Rings: The Fellowship of the Ring."
-    }]
+      text: 'The Lord of the Rings: The Fellowship of the Ring.'
+    }];
     expect(InvertedIndexUtility.isValidJson(fileContents)).toBe(true);
     expect(InvertedIndexUtility.isValidJson('')).toBe(false);
     expect(InvertedIndexUtility.isValidJson([])).toBe(false);
@@ -83,8 +77,9 @@ describe('Read book data', () => {
   });
 
   it('Should return the correct filename of the uploaded file', () => {
-    let answer = InvertedIndexUtility.formatFileName('src/jasmine/books.json');
-    let failed = InvertedIndexUtility.formatFileName([]);
+    const answer = InvertedIndexUtility
+    .formatFileName('/src/jasmine/books.json');
+    const failed = InvertedIndexUtility.formatFileName([]);
     expect(answer).toEqual('books.json');
     expect(failed).toEqual('bad input');
   });
@@ -93,14 +88,14 @@ describe('Read book data', () => {
 describe('Populate Index', () => {
   describe('On file upload', () => {
     const jsoncontent = [{
-      "title": "Alice",
-      "text": "fall imagination."
-    }, ];
+      title: 'Alice',
+      text: 'fall imagination.'
+    }];
     it('Should create the index once the JSON file has been read', () => {
       expect(typeof index.reference['books.json']).toEqual('object');
       expect(typeof index.populateReference).toEqual('function');
       expect(index
-        .populateReference({ "0": ["a", "alice", "and"] }, 'books2.json'))
+        .populateReference({ 0: ['a', 'alice', 'and'] }, 'books2.json'))
         .toEqual({ a: [0], alice: [0], and: [0] });
     });
 
@@ -116,7 +111,8 @@ describe('Populate Index', () => {
     it('Should create an inverted index', () => {
       let verdict = true;
       const indexContent = index.reference['books.json'];
-      for (let value in indexContent) {
+      /* eslint-disable no-restricted-syntax */
+      for (const value in indexContent) {
         if (!Array.isArray(indexContent[value]) ||
           isNaN(indexContent[value][0])) {
           verdict = false;
@@ -128,8 +124,8 @@ describe('Populate Index', () => {
     it('Should not overwrite the previously created index', () => {
       const indexBefore = index.reference['books.json'];
       const indexAfter = index.reference['tests.json'];
-      expect(typeof indexBefore == 'object' &&
-        typeof indexAfter == 'object').toBe(true);
+      expect(typeof indexBefore === 'object' &&
+        typeof indexAfter === 'object').toBe(true);
     });
 
     it('Should save tokens when called with a valid json file', () => {
@@ -158,14 +154,14 @@ describe('Search Index', () => {
       search results for multiple word queries`, () => {
       expect(index.searchIndex('lord of the rings',
         ['books.json'])['books.json']).toEqual({
-        lord: [1],
-        of: [0, 1],
-        the: [1],
-        rings: [1]
-      });
+          lord: [1],
+          of: [0, 1],
+          the: [1],
+          rings: [1]
+        });
       expect(index.searchIndex('lord of', ['books.json']))
-        .toEqual({ "books.json": { lord: [1], of: [0, 1] } });
-      expect(index.searchIndex('lord of', ['books.json'])["books.json"].lord)
+        .toEqual({ 'books.json': { lord: [1], of: [0, 1] } });
+      expect(index.searchIndex('lord of', ['books.json'])['books.json'].lord)
         .toEqual([1]);
     });
 
@@ -173,8 +169,8 @@ describe('Search Index', () => {
       expect(index.searchIndex('middleware', ['books.json']))
         .toEqual({ 'No results found : please refine your search query': '' });
       expect(index.searchIndex())
-        .toEqual({ 
-          'Please enter search query and select index to search': '' 
+        .toEqual({
+          'Please enter search query and select index to search': ''
         });
     });
   });

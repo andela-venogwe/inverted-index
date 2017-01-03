@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Class for creating an inverted index.
  */
@@ -33,6 +31,7 @@ class InvertedIndex {
         .sort());
       tokens[index] = uniqueTokens;
       words = words.concat(uniqueTokens);
+      this.words = words;
     });
     return { tokens, jsonObject, words };
   }
@@ -48,6 +47,7 @@ class InvertedIndex {
     this.reference[theDocument] = {};
     const tokenIndex = () => {
       jsonObject[index].forEach((word) => {
+        /* eslint-disable no-unused-expressions */
         this.reference[theDocument][word] !== undefined ?
           (this.reference[theDocument][word].push(index)) :
           (this.reference[theDocument][word] = [],
@@ -71,6 +71,7 @@ class InvertedIndex {
     return new Promise((resolve, reject) => {
       InvertedIndexUtility.readFile(url, (data) => {
         resolve(data.response);
+        reject('an error occurred');
       });
     }).then((jsonObject) => {
       try {
@@ -119,6 +120,8 @@ class InvertedIndex {
         .forEach((word) => {
           documentNames.forEach((documentFile) => {
             const docKeys = Object.keys(this.reference[documentFile]);
+            /* eslint-disable no-nested-ternary */
+            /* eslint-disable no-unused-expressions */
             (typeof this.searchReturn[documentFile] === 'object' &&
               !Array.isArray(this.searchReturn[documentFile])) ?
             (docKeys.indexOf(word) !== -1 ?
@@ -132,7 +135,8 @@ class InvertedIndex {
         });
       if (Object.keys(this.searchReturn).length < 1) {
         return { 'No results found : please refine your search query': '' };
-      } else { return this.searchReturn; }
+      }
+      return this.searchReturn;
     }
     return { 'Please enter search query and select index to search': '' };
   }

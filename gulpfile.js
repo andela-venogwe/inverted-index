@@ -1,6 +1,4 @@
 'use strict';
-/* eslint-disable no-unsed-vars */
-/* eslint-disable no-undef */
 
 const eslint = require('gulp-eslint');
 

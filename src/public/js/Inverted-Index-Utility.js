@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Helper Class for creating an inverted index.
  */
@@ -68,17 +66,15 @@ class InvertedIndexUtility {
             && typeof jsonObject[count].text === 'string';
           if (!(hasValidTitle && hasValidText)) {
             return false;
-          } else {
-            count += 1;
           }
+          count += 1;
         }
       } catch (error) {
         return false;
       }
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**
@@ -110,3 +106,4 @@ class InvertedIndexUtility {
       .filter(item => /\S/gi.test(item));
   }
 }
+
