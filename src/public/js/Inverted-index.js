@@ -44,8 +44,6 @@ class InvertedIndex {
    * @returns {object} The file indexes.
    */
   populateReference(jsonObject, theDocument) {
-    /* eslint-disable no-param-reassign */
-    /* eslint-disable no-unused-expression */
     let index = 0;
     this.reference[theDocument] = {};
     const tokenIndex = () => {
@@ -71,8 +69,6 @@ class InvertedIndex {
    * @returns {object} The reference object for current file.
    */
   createIndex(url) {
-    /* eslint-disable no-unused-vars */
-    /* eslint-disable consistent-return */
     return new Promise((resolve, reject) => {
       InvertedIndexUtility.readFile(url, (data) => {
         resolve(data.response);
@@ -112,9 +108,6 @@ class InvertedIndex {
    * @returns {object} An object with the accurate search results.
    */
   searchIndex(value, documentNames) {
-    /* eslint-disable no-unused-expressions */
-    /* eslint-disable no-unused-vars */
-    /* eslint-disable no-nested-ternary */
     this.searchReturn = {};
     if (value !== (null || undefined)) {
       if (documentNames === undefined || documentNames.length < 1 ||
